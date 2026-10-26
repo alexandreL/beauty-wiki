@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Beauty Wiki",
+  "version": "0.1.0",
+  "description": "Redesign de lecture pour Wikipédia, sans compte ni IA.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "beauty-wiki@local",
+      "strict_min_version": "115.0",
+      "data_collection_permissions": { "required": ["none"] }
+    }
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["*://*.wikipedia.org/*"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.wikipedia.org/*"],
+      "css": [
+        "src/css/tokens.css",
+        "src/css/base.css",
+        "src/css/layout.css",
+        "src/css/chrome.css",
+        "src/css/content.css",
+        "src/css/responsive.css"
+      ],
+      "js": ["src/lib.js", "src/content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "Beauty Wiki",
+    "default_icon": { "48": "icons/icon.svg" }
+  },
+  "icons": { "48": "icons/icon.svg", "96": "icons/icon.svg" }
+}
