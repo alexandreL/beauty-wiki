@@ -1,1 +1,78 @@
 /* Beauty Wiki — design tokens, themes and fonts */
+
+html[data-bw] {
+  --bw-bg: #fff;
+  --bw-fg: #000;
+  --bw-ash: #f7f7f7;
+  --bw-border: #e1e1e1;
+  --bw-mid: #858585;
+  --bw-light: #b3b3b3;
+  --bw-link: #3e69c5;
+  --bw-accent: #161fff;
+  --bw-error: #db3434;
+  --bw-code-bg: #f7f7f7;
+  --bw-quote-border: #e1e1e1;
+  --bw-table-stripe: #fafafa;
+
+  --bw-serif: 'IBM Plex Serif', 'Noto Serif', Georgia, 'Times New Roman', serif;
+  --bw-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  --bw-radius-s: 4px;
+  --bw-radius-m: 8px;
+  --bw-radius-l: 12px;
+  --bw-radius-xl: 16px;
+  --bw-radius-2xl: 24px;
+
+  --bw-elevation-1: 0 0 10px rgba(0, 0, 0, 0.1);
+  --bw-elevation-2: 2px 3px 16px rgba(0, 0, 0, 0.2);
+
+  --bw-article-width: 860px;
+  --bw-toc-width: 200px;
+  --bw-backdrop: rgba(255, 255, 255, 0.85);
+
+  color-scheme: light;
+}
+
+html[data-bw][data-bw-width='680'] { --bw-article-width: 680px; }
+html[data-bw][data-bw-width='970'] { --bw-article-width: 970px; }
+html[data-bw][data-bw-width='1200'] { --bw-article-width: 1200px; }
+
+html[data-bw][data-bw-theme='dark'] {
+  --bw-bg: #0a0a0a;
+  --bw-fg: #fff;
+  --bw-ash: #252525;
+  --bw-border: #3a3a3a;
+  --bw-mid: #9f9f9f;
+  --bw-light: #636363;
+  --bw-link: #8498ff;
+  --bw-accent: #8498ff;
+  --bw-error: #e06565;
+  --bw-code-bg: #1c1c1c;
+  --bw-quote-border: #3a3a3a;
+  --bw-table-stripe: #171717;
+  --bw-backdrop: rgba(10, 10, 10, 0.85);
+
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-bw][data-bw-theme='auto'] {
+    --bw-bg: #0a0a0a;
+    --bw-fg: #fff;
+    --bw-ash: #252525;
+    --bw-border: #3a3a3a;
+    --bw-mid: #9f9f9f;
+    --bw-light: #636363;
+    --bw-link: #8498ff;
+    --bw-accent: #8498ff;
+    --bw-error: #e06565;
+    --bw-code-bg: #1c1c1c;
+    --bw-quote-border: #3a3a3a;
+    --bw-table-stripe: #171717;
+    --bw-backdrop: rgba(10, 10, 10, 0.85);
+
+    color-scheme: dark;
+  }
+}
+
+/* Fonts are added in a later task; @font-face rules live at the end of this file. */

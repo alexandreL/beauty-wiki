@@ -72,6 +72,7 @@ var BWLib = (function () {
 
   function applySettings(root, settings) {
     var normalized = normalizeSettings(settings);
+    root.setAttribute('data-bw', '');
     root.setAttribute('data-bw-theme', normalized.theme);
     root.setAttribute('data-bw-width', String(normalized.width));
     root.setAttribute('data-bw-size', normalized.size);
