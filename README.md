@@ -18,7 +18,8 @@ L'extension reste active jusqu'au redémarrage de Firefox.
 
 ## Réglages
 
-Le popup de la barre d'outils propose :
+Le bouton soleil/lune dans l'en-tête bascule instantanément entre clair et sombre (le choix
+est mémorisé). Le popup de la barre d'outils propose :
 
 - **Thème** : auto (suit l'OS), clair, sombre.
 - **Largeur** : 680, 860 (défaut), 970, 1200 px.

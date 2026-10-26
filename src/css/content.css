@@ -174,3 +174,21 @@ html[data-bw][data-bw-theme='dark'] [data-bw-kind='article'] #mw-content-text .f
 html[data-bw][data-bw-theme='dark'] [data-bw-kind='article'] #mw-content-text .infobox img {
   background: #fff;
 }
+
+/* Images et légendes : aucun cadre hérité de Wikipédia. */
+html[data-bw][data-bw-kind='article'] #mw-content-text figure img,
+html[data-bw][data-bw-kind='article'] #mw-content-text .thumb img,
+html[data-bw][data-bw-kind='article'] #mw-content-text .thumbinner,
+html[data-bw][data-bw-kind='article'] #mw-content-text .thumbouter {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-bw][data-bw-kind='article'] #mw-content-text figcaption,
+html[data-bw][data-bw-kind='article'] #mw-content-text .thumbcaption {
+  padding: 8px 2px 0 !important;
+  color: var(--bw-mid);
+  font-size: 13px;
+  line-height: 1.4;
+}

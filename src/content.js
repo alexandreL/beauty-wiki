@@ -99,6 +99,7 @@ var BW = (function () {
       run(installCover);
       run(installTables);
       run(installTocToggle);
+      run(installThemeToggle);
     } else {
       document.body.classList.add('bw-tokens-only');
     }
@@ -118,6 +119,7 @@ var BW = (function () {
     browser.storage.local.get('beautyWiki')
       .then(function (stored) {
         if (stored && stored.beautyWiki) BWLib.applySettings(document.documentElement, stored.beautyWiki);
+        paintThemeToggle(document.querySelector('.bw-theme-toggle'));
       })
       .catch(function () {});
 
@@ -125,6 +127,7 @@ var BW = (function () {
       browser.storage.onChanged.addListener(function (changes, area) {
         if (area !== 'local' || !changes || !changes.beautyWiki) return;
         BWLib.applySettings(document.documentElement, changes.beautyWiki.newValue);
+        paintThemeToggle(document.querySelector('.bw-theme-toggle'));
       });
     }
   }
@@ -200,6 +203,62 @@ var BW = (function () {
       wrapper.appendChild(table);
       table.dataset.bwWrapped = '1';
     }
+  }
+
+  function currentTheme() {
+    return document.documentElement.getAttribute('data-bw-theme') || 'auto';
+  }
+
+  function effectiveTheme() {
+    var theme = currentTheme();
+    if (theme !== 'auto') return theme;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function currentSettings(theme) {
+    return {
+      theme: theme || currentTheme(),
+      width: Number(document.documentElement.getAttribute('data-bw-width')) || 860,
+      size: document.documentElement.getAttribute('data-bw-size') || 'm'
+    };
+  }
+
+  function paintThemeToggle(toggle) {
+    if (!toggle) return;
+    var dark = effectiveTheme() === 'dark';
+    var french = lang() === 'fr';
+    toggle.classList.toggle('bw-theme-toggle--dark', dark);
+    toggle.setAttribute('aria-pressed', dark ? 'true' : 'false');
+    toggle.setAttribute('aria-label', dark
+      ? (french ? 'Passer au thème clair' : 'Switch to light theme')
+      : (french ? 'Passer au thème sombre' : 'Switch to dark theme'));
+    toggle.setAttribute('title', toggle.getAttribute('aria-label'));
+  }
+
+  function installThemeToggle() {
+    var host = document.querySelector('.vector-header-end') || document.querySelector('.vector-header');
+    if (!host || document.querySelector('.bw-theme-toggle')) return;
+
+    var toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'bw-theme-toggle';
+    paintThemeToggle(toggle);
+
+    toggle.addEventListener('click', function () {
+      var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+      var settings = currentSettings(next);
+      BWLib.applySettings(document.documentElement, settings);
+      paintThemeToggle(toggle);
+      if (typeof browser !== 'undefined' && browser.storage && browser.storage.local) {
+        browser.storage.local.set({ beautyWiki: settings }).catch(function () {});
+      }
+    });
+
+    var media = window.matchMedia('(prefers-color-scheme: dark)');
+    var repaint = function () { paintThemeToggle(toggle); };
+    if (media.addEventListener) media.addEventListener('change', repaint);
+
+    host.appendChild(toggle);
   }
 
   function tocLabel() {
@@ -278,7 +337,7 @@ var BW = (function () {
     syncClosedState();
   }
 
-  return { init: init };
+  return { init: init, _paintThemeToggle: paintThemeToggle };
 })();
 
 if (typeof module !== 'undefined') module.exports = BW;

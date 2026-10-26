@@ -93,3 +93,48 @@ test('unknown skins are left untouched', async () => {
     await close();
   }
 });
+
+test('search pill and photo captions have no legacy outlines', async () => {
+  const { page, close } = await openFixture(browser, 'article.html');
+  try {
+    const s = await page.evaluate(() => ({
+      radius: getComputedStyle(document.querySelector('#searchform')).borderRadius,
+      buttonBorder: getComputedStyle(document.querySelector('#searchform button')).borderTopWidth,
+      imgBorder: getComputedStyle(document.querySelector('#mw-content-text figure img')).borderTopWidth,
+      capPad: getComputedStyle(document.querySelector('#mw-content-text figcaption')).paddingTop,
+      capColor: getComputedStyle(document.querySelector('#mw-content-text figcaption')).color,
+    }));
+    assert.equal(s.radius, '999px');
+    assert.equal(s.buttonBorder, '0px');
+    assert.equal(s.imgBorder, '0px');
+    assert.equal(s.capPad, '8px');
+    assert.equal(s.capColor, 'rgb(110, 110, 110)');
+  } finally {
+    await close();
+  }
+});
+
+test('header toggle switches theme and persists it', async () => {
+  const { page, close } = await openFixture(browser, 'article.html');
+  try {
+    await page.waitForTimeout(100);
+    const toggle = page.locator('.bw-theme-toggle');
+    assert.equal(await toggle.count(), 1);
+    assert.equal(await toggle.getAttribute('aria-pressed'), 'false');
+
+    await page.evaluate(() => {
+      window.__set = null;
+      window.browser.storage.local.set = async (value) => { window.__set = value; };
+    });
+    await toggle.click();
+    assert.equal(await page.evaluate(() => document.documentElement.getAttribute('data-bw-theme')), 'dark');
+    assert.equal(await toggle.getAttribute('aria-pressed'), 'true');
+    assert.deepEqual(await page.evaluate(() => window.__set), { beautyWiki: { theme: 'dark', width: 860, size: 'm' } });
+
+    await toggle.click();
+    assert.equal(await page.evaluate(() => document.documentElement.getAttribute('data-bw-theme')), 'light');
+    assert.equal(await toggle.getAttribute('aria-pressed'), 'false');
+  } finally {
+    await close();
+  }
+});
