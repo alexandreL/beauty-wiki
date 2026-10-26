@@ -99,12 +99,14 @@ test('RTL articles keep the reading column and put the TOC on the right', async 
         innerWidth: window.innerWidth,
         contentWidth: Math.round(content.width),
         tocX: Math.round(toc.x),
+        tocWidth: Math.round(toc.width),
         centerX: window.innerWidth / 2,
       };
     });
     assert.ok(state.scrollWidth <= state.innerWidth, `${state.scrollWidth} > ${state.innerWidth}`);
     assert.ok(Math.abs(state.contentWidth - 860) <= 2, `content ${state.contentWidth}`);
     assert.ok(state.tocX > state.centerX, `toc ${state.tocX} <= ${state.centerX}`);
+    assert.ok(Math.abs(state.tocWidth - 200) <= 2, `toc width ${state.tocWidth}`);
   } finally {
     await close();
   }

@@ -74,11 +74,7 @@
   }
 }
 
-/* RTL: mirror the grid and use logical spacing. */
-html[data-bw][dir='rtl'] body.bw-article .mw-page-container {
-  grid-template-columns: minmax(48px, 1fr) minmax(0, var(--bw-article-width)) var(--bw-toc-width);
-}
-
+/* RTL: the grid's inline direction already mirrors columns; keep logical spacing. */
 html[data-bw][dir='rtl'] body.bw-article .vector-column-start {
   padding-right: 0;
   padding-left: 8px;

@@ -24,6 +24,7 @@ html[data-bw] body.bw-article .vector-column-start {
   position: sticky;
   top: 16px;
   align-self: start;
+  box-sizing: border-box;
   height: calc(100vh - 32px);
   overflow-y: auto;
   overscroll-behavior: contain;
