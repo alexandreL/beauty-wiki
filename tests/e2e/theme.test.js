@@ -67,6 +67,16 @@ test('auto theme follows prefers-color-scheme without flash', async () => {
   }
 });
 
+test('fresh install defaults to auto theme', async () => {
+  const { page, close } = await openFixture(browser, 'article.html');
+  try {
+    await page.waitForTimeout(100);
+    assert.equal(await page.evaluate(() => document.documentElement.getAttribute('data-bw-theme')), 'auto');
+  } finally {
+    await close();
+  }
+});
+
 test('text size setting scales the reading font', async () => {
   const { page, close } = await openFixture(browser, 'article.html', { content: false });
   try {

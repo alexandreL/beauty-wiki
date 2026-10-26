@@ -63,11 +63,18 @@ var BWLib = (function () {
   }
 
   function upscaleThumbUrl(url, targetWidth) {
-    if (typeof url !== 'string' || url.indexOf('/thumb/') === -1) return url;
-    var match = /^(.*\/thumb\/.*\/)(\d+)px-([^/]+)$/.exec(url);
-    if (!match) return url;
-    if (Number(match[2]) >= targetWidth) return url;
-    return match[1] + targetWidth + 'px-' + match[3];
+    if (typeof url !== 'string') return url;
+    try {
+      var parsed = new URL(url);
+      if (parsed.pathname.indexOf('/thumb/') === -1) return url;
+      var match = /^(.*\/thumb\/.*\/)(\d+)px-([^/]+)$/.exec(parsed.pathname);
+      if (!match) return url;
+      if (Number(match[2]) >= targetWidth) return url;
+      parsed.pathname = match[1] + targetWidth + 'px-' + match[3];
+      return parsed.href;
+    } catch (e) {
+      return url;
+    }
   }
 
   function applySettings(root, settings) {
@@ -81,14 +88,28 @@ var BWLib = (function () {
   var ICON_HINT = /(^|[-_ ])(icon|flag|logo|symbol|seal|coat|arms)([-_ ]|$)/i;
 
   function imageWidth(img) {
-    return Number(img.getAttribute('width')) || img.naturalWidth || 0;
+    var declared = Number(img.getAttribute('width')) || 0;
+    var natural = img.naturalWidth || 0;
+    return Math.max(declared, natural);
+  }
+
+  function isUnusableSource(img, src) {
+    if (!src || /\.svg(\?|$)/i.test(src)) return true;
+    if (/^https?:\/\/maps\.wikimedia\.org\//i.test(src)) return true;
+    if (/map|kartographer/i.test(src)) return true;
+    if (img.closest('.mw-indicators, .mw-kartographer, .mapframe')) return true;
+    var alt = img.getAttribute('alt') || '';
+    if (/carte|map/i.test(alt)) return true;
+    return false;
   }
 
   function isUsableImage(img) {
     var src = img.getAttribute('src') || '';
-    if (!src || /\.svg(\?|$)/i.test(src)) return false;
+    if (isUnusableSource(img, src)) return false;
+
     var width = imageWidth(img);
     if (width && width < 300) return false;
+
     var context = ((img.className || '') + ' ' + (img.parentElement && img.parentElement.className) || '');
     if (ICON_HINT.test(context)) return false;
     return true;
@@ -96,9 +117,9 @@ var BWLib = (function () {
 
   function pickCoverImage(doc, pageUrl) {
     var groups = [
-      'table.infobox img',
+      '#mw-content-text .infobox img',
       '.infobox img',
-      '#mw-content-text figure img',
+      '#mw-content-text > .mw-parser-output figure img',
       '#mw-content-text img'
     ];
 

@@ -1,19 +1,25 @@
 /* Beauty Wiki — responsive and RTL */
 
 @media (max-width: 1023px) {
-  html[data-bw] body.bw-article .mw-page-container {
+  html[data-bw-kind='article'] .mw-page-container-inner {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'siteNotice'
+      'columnStart'
+      'pageContent'
+      'footer';
     column-gap: 0;
     padding: 16px 16px 96px;
   }
 
-  html[data-bw] body.bw-article .vector-column-start {
+  html[data-bw-kind='article'] .vector-column-start {
     position: fixed;
     top: 0;
     left: 0;
     z-index: 60;
     width: min(300px, 82vw);
     height: 100vh;
+    max-height: none;
     padding: 24px;
     background: var(--bw-bg);
     border-right: 1px solid var(--bw-border);
@@ -21,9 +27,23 @@
     transform: translateX(-100%);
   }
 
-  html[data-bw] body.bw-article.bw-toc-open .vector-column-start,
-  html[data-bw].bw-toc-open body.bw-article .vector-column-start {
+  html[data-bw].bw-toc-open .vector-column-start {
     transform: translateX(0);
+  }
+
+  html[data-bw] .bw-toc-veil {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  html[data-bw].bw-toc-open .bw-toc-veil {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   html[data-bw] .bw-toc-toggle {
@@ -54,38 +74,40 @@
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html[data-bw] .bw-toc-veil {
+    transition: opacity 180ms ease;
+  }
+}
+
 @media (max-width: 767px) {
   html[data-bw] #firstHeading {
     font-size: 34px;
   }
 
-  html[data-bw] body.bw-article .mw-page-container {
+  html[data-bw-kind='article'] .mw-page-container-inner {
     padding-inline: 16px;
   }
 
-  html[data-bw] body.bw-article .bw-cover {
+  html[data-bw-kind='article'] .bw-cover {
     margin-inline: -16px;
     border-radius: 0;
   }
 
-  html[data-bw] body.bw-article .infobox {
+  html[data-bw-kind='article'] .infobox {
     float: none;
     width: 100%;
   }
 }
 
 /* RTL: the grid's inline direction already mirrors columns; keep logical spacing. */
-html[data-bw][dir='rtl'] body.bw-article .vector-column-start {
+html[data-bw][dir='rtl'][data-bw-kind='article'] .vector-column-start {
   padding-right: 0;
   padding-left: 8px;
 }
 
 @media (max-width: 1023px) {
-  html[data-bw][dir='rtl'] body.bw-article .mw-page-container {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  html[data-bw][dir='rtl'] body.bw-article .vector-column-start {
+  html[data-bw][dir='rtl'][data-bw-kind='article'] .vector-column-start {
     left: auto;
     right: 0;
     border-right: 0;
@@ -93,7 +115,7 @@ html[data-bw][dir='rtl'] body.bw-article .vector-column-start {
     transform: translateX(100%);
   }
 
-  html[data-bw].bw-toc-open body.bw-article .vector-column-start {
+  html[data-bw][dir='rtl'].bw-toc-open .vector-column-start {
     transform: translateX(0);
   }
 

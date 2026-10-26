@@ -75,9 +75,12 @@ test('contents drawer opens under 1024px', async () => {
   try {
     const toggle = page.locator('.bw-toc-toggle');
     assert.equal(await toggle.isVisible(), true);
+    assert.equal(await page.evaluate(() => document.querySelector('.vector-column-start').hasAttribute('inert')), true);
     assert.equal(await toggle.getAttribute('aria-expanded'), 'false');
     await toggle.click();
     assert.equal(await toggle.getAttribute('aria-expanded'), 'true');
+    assert.equal(await page.evaluate(() => document.querySelector('.vector-column-start').hasAttribute('inert')), false);
+    assert.equal(await page.evaluate(() => getComputedStyle(document.querySelector('.bw-toc-veil')).pointerEvents), 'auto');
     assert.equal(await page.evaluate(() => document.documentElement.classList.contains('bw-toc-open')), true);
   } finally {
     await close();

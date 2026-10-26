@@ -27,7 +27,7 @@ html[data-bw] .mw-message-box {
 }
 
 /* En-tête minimal, collant, translucide. */
-html[data-bw] body.bw-article .vector-header {
+html[data-bw][data-bw-kind='article'] .vector-header {
   position: sticky;
   top: 0;
   z-index: 50;
@@ -43,14 +43,14 @@ html[data-bw] body.bw-article .vector-header {
   box-shadow: none;
 }
 
-html[data-bw] body.bw-article .vector-header .mw-logo {
+html[data-bw][data-bw-kind='article'] .vector-header .mw-logo {
   display: inline-flex;
   align-items: center;
   margin: 0;
   text-decoration: none;
 }
 
-html[data-bw] body.bw-article .vector-header .mw-logo-wordmark {
+html[data-bw][data-bw-kind='article'] .vector-header .mw-logo-wordmark {
   font-family: var(--bw-serif);
   font-size: 18px;
   font-weight: 600;
@@ -58,7 +58,7 @@ html[data-bw] body.bw-article .vector-header .mw-logo-wordmark {
 }
 
 /* Recherche en pilule. */
-html[data-bw] body.bw-article #searchform {
+html[data-bw][data-bw-kind='article'] #searchform {
   flex: 1 1 auto;
   display: flex;
   gap: 8px;
@@ -66,7 +66,7 @@ html[data-bw] body.bw-article #searchform {
   margin: 0;
 }
 
-html[data-bw] body.bw-article #searchform input {
+html[data-bw][data-bw-kind='article'] #searchform input {
   width: 100%;
   height: 36px;
   padding: 0 16px;
@@ -77,11 +77,11 @@ html[data-bw] body.bw-article #searchform input {
   font: 400 14px/1 var(--bw-sans);
 }
 
-html[data-bw] body.bw-article #searchform input::placeholder {
+html[data-bw][data-bw-kind='article'] #searchform input::placeholder {
   color: var(--bw-mid);
 }
 
-html[data-bw] body.bw-article #searchform button {
+html[data-bw][data-bw-kind='article'] #searchform button {
   height: 36px;
   padding: 0 14px;
   border: 1px solid var(--bw-border);
@@ -92,7 +92,7 @@ html[data-bw] body.bw-article #searchform button {
   cursor: pointer;
 }
 
-html[data-bw] body.bw-article #p-lang-btn {
+html[data-bw][data-bw-kind='article'] #p-lang-btn {
   margin-inline-start: auto;
   font-size: 14px;
 }
@@ -114,4 +114,35 @@ html[data-bw] .bw-skip {
 
 html[data-bw] .bw-skip:focus {
   top: 16px;
+}
+
+/* Thème sombre : les surfaces Vector suivent les tokens, y compris hors articles. */
+html[data-bw][data-bw-theme='dark'] .mw-page-container,
+html[data-bw][data-bw-theme='dark'] .mw-page-container-inner,
+html[data-bw][data-bw-theme='dark'] .mw-body,
+html[data-bw][data-bw-theme='dark'] .vector-header,
+html[data-bw][data-bw-theme='dark'] .mw-footer-container,
+html[data-bw][data-bw-theme='dark'] .vector-column-start {
+  background: var(--bw-bg) !important;
+  color: var(--bw-fg);
+}
+
+html[data-bw][data-bw-theme='dark'] .vector-header {
+  border-bottom-color: var(--bw-border);
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-bw][data-bw-theme='auto'] .mw-page-container,
+  html[data-bw][data-bw-theme='auto'] .mw-page-container-inner,
+  html[data-bw][data-bw-theme='auto'] .mw-body,
+  html[data-bw][data-bw-theme='auto'] .vector-header,
+  html[data-bw][data-bw-theme='auto'] .mw-footer-container,
+  html[data-bw][data-bw-theme='auto'] .vector-column-start {
+    background: var(--bw-bg) !important;
+    color: var(--bw-fg);
+  }
+
+  html[data-bw][data-bw-theme='auto'] .vector-header {
+    border-bottom-color: var(--bw-border);
+  }
 }

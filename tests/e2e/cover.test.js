@@ -22,6 +22,8 @@ test('cover is inserted between the title and the lead paragraph', async () => {
       return {
         exists: !!cover,
         src: img && img.src,
+        inContent: !!(cover && cover.closest('#mw-content-text > .mw-parser-output')),
+        visible: !!(cover && cover.offsetParent !== null),
         widthAttr: img && img.getAttribute('width'),
         afterTitle: !!(cover && h1 && (h1.compareDocumentPosition(cover) & Node.DOCUMENT_POSITION_FOLLOWING)),
         beforeLead: !!(cover && firstP && (cover.compareDocumentPosition(firstP) & Node.DOCUMENT_POSITION_FOLLOWING)),
@@ -32,6 +34,9 @@ test('cover is inserted between the title and the lead paragraph', async () => {
     });
     assert.equal(state.exists, true);
     assert.ok(state.src.includes('/1200px-'), state.src);
+    assert.ok(state.src.endsWith('?utm_source=test'), state.src);
+    assert.equal(state.inContent, true);
+    assert.equal(state.visible, true);
     assert.equal(state.widthAttr, '1200');
     assert.equal(state.afterTitle, true);
     assert.equal(state.beforeLead, true);

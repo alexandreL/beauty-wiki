@@ -66,11 +66,13 @@ test('dark mode repaints surfaces with accessible contrast', async () => {
     const s = await page.evaluate(() => ({
       infoboxBg: getComputedStyle(document.querySelector('.infobox')).backgroundColor,
       tableText: getComputedStyle(document.querySelector('.wikitable td')).color,
-      tableBg: getComputedStyle(document.querySelector('.wikitable td')).backgroundColor,
+      tableBg: getComputedStyle(document.querySelector('.wikitable')).backgroundColor,
       link: getComputedStyle(document.querySelector('#mw-content-text a')).color,
       bodyBg: getComputedStyle(document.body).backgroundColor,
     }));
     assert.equal(s.infoboxBg, 'rgb(37, 37, 37)');
+    assert.notEqual(s.tableBg, 'rgba(0, 0, 0, 0)');
+    assert.equal(s.tableBg, 'rgb(10, 10, 10)');
     assert.ok(contrast(s.tableText, s.bodyBg) >= 4.5, `table contrast ${contrast(s.tableText, s.bodyBg)}`);
     assert.ok(contrast(s.link, s.bodyBg) >= 4.5, `link contrast ${contrast(s.link, s.bodyBg)}`);
   } finally {

@@ -12,6 +12,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --pw-button-fg: #0a0a0a;
     --pw-bg: #0a0a0a;
     --pw-fg: #fff;
     --pw-ash: #252525;
@@ -71,7 +72,7 @@ button {
   border: 0;
   border-radius: 999px;
   background: var(--pw-accent);
-  color: #fff;
+  color: var(--pw-button-fg, #fff);
   font: 600 14px/1 var(--pw-sans);
   cursor: pointer;
 }

@@ -12,13 +12,38 @@ const FIXTURE_URLS = {
   'article-noimage.html': 'https://fr.wikipedia.org/wiki/Lyon',
   'special.html': 'https://fr.wikipedia.org/wiki/Sp%C3%A9cial:Recherche',
   'edit.html': 'https://fr.wikipedia.org/w/index.php?title=Paris&action=edit',
+  'unknown-skin.html': 'https://fr.wikipedia.org/wiki/Paris',
   'rtl.html': 'https://ar.wikipedia.org/wiki/%D8%A8%D8%A7%D8%B1%D9%8A%D8%B3',
 };
 
-const PIXEL = Buffer.from(
-  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
-  'base64'
-);
+const zlib = require('node:zlib');
+
+function makePng(width, height) {
+  const rowBytes = width * 3 + 1;
+  const raw = Buffer.alloc(rowBytes * height, 200);
+  for (let y = 0; y < height; y++) raw[y * rowBytes] = 0;
+  const chunk = (type, data) => {
+    const len = Buffer.alloc(4);
+    len.writeUInt32BE(data.length);
+    const tag = Buffer.from(type);
+    const crc = Buffer.alloc(4);
+    crc.writeUInt32BE(zlib.crc32(Buffer.concat([tag, data])) >>> 0);
+    return Buffer.concat([len, tag, data, crc]);
+  };
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(width, 0);
+  ihdr.writeUInt32BE(height, 4);
+  ihdr[8] = 8;
+  ihdr[9] = 2;
+  return Buffer.concat([
+    Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
+    chunk('IHDR', ihdr),
+    chunk('IDAT', zlib.deflateSync(raw)),
+    chunk('IEND', Buffer.alloc(0)),
+  ]);
+}
+
+const PIXEL = makePng(400, 250);
 
 async function launch() {
   return chromium.launch({ channel: 'chrome', headless: true });
@@ -36,7 +61,7 @@ async function openFixture(browser, fixture, opts = {}) {
   const html = require('node:fs').readFileSync(path.join(ROOT, 'tests/fixtures', fixture), 'utf8');
   const target = opts.url || FIXTURE_URLS[fixture] || 'https://fr.wikipedia.org/wiki/Paris';
 
-  await page.route('https://upload.wikimedia.org/**', (route) => route.fulfill({ status: 200, contentType: 'image/png', body: PIXEL }));
+  await page.route('https://thumb.wikimedia.org/**', (route) => route.fulfill({ status: 200, contentType: 'image/png', body: PIXEL }));
 
   await page.route('https://*.wikipedia.org/**', async (route) => {
     const requestUrl = new URL(route.request().url());

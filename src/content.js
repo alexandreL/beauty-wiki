@@ -2,6 +2,27 @@ var BW = (function () {
   'use strict';
 
   var started = false;
+  var DEFAULT_SETTINGS = { theme: 'auto', width: 860, size: 'm' };
+
+  var LABELS = {
+    fr: 'Sommaire',
+    en: 'Contents',
+    de: 'Inhaltsverzeichnis',
+    es: 'Índice',
+    it: 'Indice',
+    pt: 'Conteúdo',
+    nl: 'Inhoud',
+    pl: 'Spis treści',
+    ru: 'Содержание',
+    ar: 'المحتويات',
+    he: 'תוכן העניינים',
+    ja: '目次',
+    zh: '目录'
+  };
+
+  function lang() {
+    return (document.documentElement.lang || 'en').split('-')[0];
+  }
 
   function init() {
     if (started) return;
@@ -12,30 +33,82 @@ var BW = (function () {
       var kind = BWLib.pageKind(location.href);
       if (kind === 'other') return;
 
-      BWLib.applySettings(root, { theme: 'light', width: 860, size: 'm' });
+      // Activation synchrone : les couleurs et la grille s'appliquent dès document_start.
+      BWLib.applySettings(root, DEFAULT_SETTINGS);
+      setKind(kind);
       loadSettings();
-      enableFor(kind);
+
+      if (document.body) {
+        enhance(kind);
+        refineKind();
+      } else {
+        document.addEventListener('DOMContentLoaded', function () {
+          enhance(kind);
+          refineKind();
+        }, { once: true });
+      }
     } catch (e) {
       console.warn('[Beauty Wiki]', e);
     }
   }
 
-  function enableFor(kind) {
-    if (!document.body) {
-      document.addEventListener('DOMContentLoaded', function () {
-        enableFor(kind);
-      }, { once: true });
+  function setKind(kind) {
+    var layout = kind === 'article' || kind === 'main' ? 'article' : 'tokens';
+    document.documentElement.setAttribute('data-bw-kind', layout);
+    return layout;
+  }
+
+  function refineKind() {
+    try {
+      if (!window.mw || typeof window.mw.config !== 'function') return;
+      var ns = window.mw.config.get('wgNamespaceNumber');
+      var special = window.mw.config.get('wgCanonicalSpecialPageName');
+      var action = window.mw.config.get('wgAction');
+      var veaction = window.mw.config.get('veaction');
+      var kind;
+
+      if (special || ns === -1) kind = 'special';
+      else if (action === 'edit' || action === 'submit' || veaction) kind = 'edit';
+      else if (action === 'history') kind = 'history';
+      else if (typeof ns === 'number' && ns !== 0) kind = ns % 2 === 1 ? 'talk' : 'other';
+      else kind = 'article';
+
+      var layout = setKind(kind);
+      if (document.body) {
+        document.body.classList.toggle('bw-article', layout === 'article');
+        document.body.classList.toggle('bw-tokens-only', layout !== 'article');
+      }
+    } catch (e) {
+      /* mw.config absent : la classification par URL reste en place. */
+    }
+  }
+
+  function enhance(kind) {
+    if (!document.body) return;
+
+    // Le skin est porté par <body> sur Wikipédia : on désactive si ce n'est pas Vector 2022.
+    if (!document.body.classList.contains('skin-vector-2022')) {
+      document.documentElement.removeAttribute('data-bw');
+      document.documentElement.removeAttribute('data-bw-kind');
       return;
     }
 
     if (kind === 'article' || kind === 'main') {
       document.body.classList.add('bw-article');
-      installSkipLink();
-      installCover();
-      installTables();
-      installTocToggle();
+      run(installSkipLink);
+      run(installCover);
+      run(installTables);
+      run(installTocToggle);
     } else {
       document.body.classList.add('bw-tokens-only');
+    }
+  }
+
+  function run(fn) {
+    try {
+      fn();
+    } catch (e) {
+      console.warn('[Beauty Wiki]', e);
     }
   }
 
@@ -62,36 +135,28 @@ var BW = (function () {
     var link = document.createElement('a');
     link.className = 'bw-skip';
     link.href = '#mw-content-text';
-    link.textContent = (document.documentElement.lang || 'en').split('-')[0] === 'fr'
-      ? 'Aller au contenu'
-      : 'Skip to content';
+    link.textContent = lang() === 'fr' ? 'Aller au contenu' : 'Skip to content';
     document.body.prepend(link);
   }
 
-  function installTables() {
-    var tables = document.querySelectorAll('#mw-content-text table');
-    for (var i = 0; i < tables.length; i++) {
-      var table = tables[i];
-      if (table.dataset.bwWrapped === '1') continue;
-      if (table.classList.contains('infobox') || table.classList.contains('navbox')) continue;
-      if (table.closest('.infobox, .navbox')) continue;
-
-      var wrapper = document.createElement('div');
-      wrapper.className = 'bw-table-scroll';
-      table.parentNode.insertBefore(wrapper, table);
-      wrapper.appendChild(table);
-      table.dataset.bwWrapped = '1';
+  function normalizeThumb(url) {
+    try {
+      var parsed = new URL(url);
+      return parsed.origin + parsed.pathname.replace(/\/\d+px-(?=[^/]+$)/, '/');
+    } catch (e) {
+      return String(url || '');
     }
   }
 
-  function normalizeThumb(url) {
-    return String(url || '').replace(/\/\d+px-(?=[^/]+$)/, '/');
+  function articleParser() {
+    return document.querySelector('#mw-content-text > .mw-parser-output') ||
+      document.querySelector('#mw-content-text .mw-parser-output');
   }
 
   function installCover() {
     if (document.querySelector('figure.bw-cover')) return;
 
-    var parser = document.querySelector('.mw-parser-output') || document.querySelector('#mw-content-text');
+    var parser = articleParser();
     if (!parser) return;
 
     var pick = BWLib.pickCoverImage(document, location.href);
@@ -111,25 +176,43 @@ var BW = (function () {
 
     figure.appendChild(img);
 
-    var lead = parser.querySelector('p');
+    var lead = parser.querySelector(':scope > section, :scope > p');
     if (lead) parser.insertBefore(figure, lead);
     else parser.prepend(figure);
 
     var infoboxImg = document.querySelector('.infobox img');
-    if (infoboxImg && normalizeThumb(infoboxImg.src) === normalizeThumb(pick.src)) {
+    if (figure.offsetParent !== null && infoboxImg && normalizeThumb(infoboxImg.src) === normalizeThumb(pick.src)) {
       infoboxImg.classList.add('bw-duplicate');
     }
   }
 
+  function installTables() {
+    var tables = document.querySelectorAll('#mw-content-text table');
+    for (var i = 0; i < tables.length; i++) {
+      var table = tables[i];
+      if (table.dataset.bwWrapped === '1') continue;
+      if (table.classList.contains('infobox') || table.classList.contains('navbox')) continue;
+      if (table.closest('.infobox, .navbox')) continue;
+
+      var wrapper = document.createElement('div');
+      wrapper.className = 'bw-table-scroll';
+      table.parentNode.insertBefore(wrapper, table);
+      wrapper.appendChild(table);
+      table.dataset.bwWrapped = '1';
+    }
+  }
+
   function tocLabel() {
-    var lang = (document.documentElement.lang || 'en').split('-')[0];
-    return lang === 'fr' ? 'Sommaire' : 'Contents';
+    return LABELS[lang()] || LABELS.en;
   }
 
   function installTocToggle() {
     if (document.querySelector('.bw-toc-toggle')) return;
-    if (!document.querySelector('.vector-toc')) return;
 
+    var toc = document.querySelector('.vector-toc');
+    if (!toc) return;
+
+    var drawer = document.querySelector('.vector-column-start') || toc;
     var toggle = document.createElement('button');
     toggle.type = 'button';
     toggle.className = 'bw-toc-toggle';
@@ -140,13 +223,42 @@ var BW = (function () {
     var veil = document.createElement('div');
     veil.className = 'bw-toc-veil';
 
+    var mq = window.matchMedia('(max-width: 1023px)');
+
+    function isOpen() {
+      return document.documentElement.classList.contains('bw-toc-open');
+    }
+
+    function syncClosedState() {
+      if (mq.matches) {
+        drawer.setAttribute('inert', '');
+        drawer.setAttribute('aria-hidden', 'true');
+      } else {
+        drawer.removeAttribute('inert');
+        drawer.removeAttribute('aria-hidden');
+      }
+    }
+
     function setOpen(open) {
       document.documentElement.classList.toggle('bw-toc-open', open);
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      document.body.style.overflow = open && mq.matches ? 'hidden' : '';
+
+      if (mq.matches) {
+        if (open) {
+          drawer.removeAttribute('inert');
+          drawer.removeAttribute('aria-hidden');
+          var first = drawer.querySelector('a, button');
+          if (first) first.focus({ preventScroll: true });
+        } else {
+          syncClosedState();
+          toggle.focus({ preventScroll: true });
+        }
+      }
     }
 
     toggle.addEventListener('click', function () {
-      setOpen(!document.documentElement.classList.contains('bw-toc-open'));
+      setOpen(!isOpen());
     });
 
     veil.addEventListener('click', function () {
@@ -154,10 +266,16 @@ var BW = (function () {
     });
 
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') setOpen(false);
+      if (event.key === 'Escape' && isOpen()) setOpen(false);
+    });
+
+    mq.addEventListener('change', function () {
+      setOpen(false);
+      syncClosedState();
     });
 
     document.body.append(veil, toggle);
+    syncClosedState();
   }
 
   return { init: init };
@@ -167,6 +285,7 @@ if (typeof module !== 'undefined') module.exports = BW;
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', BW.init, { once: true });
+  BW.init();
 } else {
   BW.init();
 }

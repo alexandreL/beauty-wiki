@@ -1,6 +1,6 @@
 /* Beauty Wiki — article content */
 
-html[data-bw] body.bw-article figure.bw-cover {
+html[data-bw][data-bw-kind='article'] figure.bw-cover {
   display: block;
   width: 100%;
   aspect-ratio: 2.4 / 1;
@@ -12,19 +12,19 @@ html[data-bw] body.bw-article figure.bw-cover {
   background: var(--bw-ash);
 }
 
-html[data-bw] body.bw-article figure.bw-cover img {
+html[data-bw][data-bw-kind='article'] figure.bw-cover img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-html[data-bw] body.bw-article img.bw-duplicate {
+html[data-bw][data-bw-kind='article'] img.bw-duplicate {
   display: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  html[data-bw] body.bw-article figure.bw-cover {
+  html[data-bw][data-bw-kind='article'] figure.bw-cover {
     animation: bw-cover-in 420ms ease-out both;
   }
 }
@@ -39,7 +39,7 @@ html[data-bw] body.bw-article img.bw-duplicate {
 }
 
 /* Infobox : flottante, compacte, alignée sur les tokens. */
-html[data-bw] body.bw-article #mw-content-text .infobox {
+html[data-bw][data-bw-kind='article'] #mw-content-text .infobox {
   float: right;
   width: 320px;
   margin: 0 0 24px 24px;
@@ -52,52 +52,54 @@ html[data-bw] body.bw-article #mw-content-text .infobox {
   line-height: 1.45;
 }
 
-html[data-bw] body.bw-article #mw-content-text .infobox th,
-html[data-bw] body.bw-article #mw-content-text .infobox td {
+html[data-bw][data-bw-kind='article'] #mw-content-text .infobox th,
+html[data-bw][data-bw-kind='article'] #mw-content-text .infobox td {
   padding: 6px 8px;
   border: 0;
   background: transparent;
 }
 
-html[data-bw] body.bw-article #mw-content-text .infobox img {
+html[data-bw][data-bw-kind='article'] #mw-content-text .infobox img {
   border-radius: var(--bw-radius-m);
 }
 
 /* Tableaux : lisibles, scrollables, jamais débordants. */
-html[data-bw] body.bw-article .bw-table-scroll {
+html[data-bw][data-bw-kind='article'] .bw-table-scroll {
   max-width: 100%;
   overflow-x: auto;
   margin: 1.5em 0;
   -webkit-overflow-scrolling: touch;
 }
 
-html[data-bw] body.bw-article #mw-content-text table.wikitable {
+html[data-bw][data-bw-kind='article'] #mw-content-text table.wikitable {
+  background: var(--bw-bg);
+  color: var(--bw-fg);
   width: 100%;
   margin: 0;
   border-collapse: collapse;
   font-size: 14px;
 }
 
-html[data-bw] body.bw-article #mw-content-text table.wikitable th,
-html[data-bw] body.bw-article #mw-content-text table.wikitable td {
+html[data-bw][data-bw-kind='article'] #mw-content-text table.wikitable th,
+html[data-bw][data-bw-kind='article'] #mw-content-text table.wikitable td {
   padding: 8px 12px;
   border: 1px solid var(--bw-border);
   background: transparent;
-  color: var(--bw-fg);
+  color: inherit;
 }
 
-html[data-bw] body.bw-article #mw-content-text table.wikitable thead th,
-html[data-bw] body.bw-article #mw-content-text table.wikitable th {
+html[data-bw][data-bw-kind='article'] #mw-content-text table.wikitable thead th,
+html[data-bw][data-bw-kind='article'] #mw-content-text table.wikitable th {
   background: var(--bw-ash);
   font-weight: 600;
 }
 
-html[data-bw] body.bw-article #mw-content-text table.wikitable tr:nth-child(even) td {
+html[data-bw][data-bw-kind='article'] #mw-content-text table.wikitable tr:nth-child(even) td {
   background: var(--bw-table-stripe);
 }
 
 /* Citations et notes. */
-html[data-bw] body.bw-article #mw-content-text blockquote {
+html[data-bw][data-bw-kind='article'] #mw-content-text blockquote {
   margin: 1.5em 0;
   padding: 8px 16px;
   border-left: 3px solid var(--bw-quote-border);
@@ -106,14 +108,14 @@ html[data-bw] body.bw-article #mw-content-text blockquote {
   font-size: 1.05em;
 }
 
-html[data-bw] body.bw-article #mw-content-text blockquote p {
+html[data-bw][data-bw-kind='article'] #mw-content-text blockquote p {
   margin: 0;
 }
 
-html[data-bw] body.bw-article .hatnote,
-html[data-bw] body.bw-article .ambox,
-html[data-bw] body.bw-article .navbox,
-html[data-bw] body.bw-article .references {
+html[data-bw][data-bw-kind='article'] .hatnote,
+html[data-bw][data-bw-kind='article'] .ambox,
+html[data-bw][data-bw-kind='article'] .navbox,
+html[data-bw][data-bw-kind='article'] .references {
   padding: 12px 16px;
   border: 1px solid var(--bw-border);
   border-radius: var(--bw-radius-l);
@@ -122,7 +124,7 @@ html[data-bw] body.bw-article .references {
   font-size: 14px;
 }
 
-html[data-bw] body.bw-article .hatnote {
+html[data-bw][data-bw-kind='article'] .hatnote {
   border: 0;
   border-left: 3px solid var(--bw-border);
   border-radius: 0;
@@ -130,45 +132,45 @@ html[data-bw] body.bw-article .hatnote {
   font-style: italic;
 }
 
-html[data-bw] body.bw-article #mw-content-text code,
-html[data-bw] body.bw-article #mw-content-text pre,
-html[data-bw] body.bw-article #mw-content-text math {
+html[data-bw][data-bw-kind='article'] #mw-content-text code,
+html[data-bw][data-bw-kind='article'] #mw-content-text pre,
+html[data-bw][data-bw-kind='article'] #mw-content-text math {
   background: var(--bw-code-bg);
   border-radius: var(--bw-radius-s);
 }
 
-html[data-bw] body.bw-article #mw-content-text pre {
+html[data-bw][data-bw-kind='article'] #mw-content-text pre {
   padding: 12px 16px;
   overflow-x: auto;
 }
 
-html[data-bw] body.bw-article #mw-content-text .thumb,
-html[data-bw] body.bw-article #mw-content-text figure {
+html[data-bw][data-bw-kind='article'] #mw-content-text .thumb,
+html[data-bw][data-bw-kind='article'] #mw-content-text figure {
   border: 0;
   background: transparent;
 }
 
-html[data-bw] body.bw-article #mw-content-text figure img,
-html[data-bw] body.bw-article #mw-content-text .thumbinner {
+html[data-bw][data-bw-kind='article'] #mw-content-text figure img,
+html[data-bw][data-bw-kind='article'] #mw-content-text .thumbinner {
   border-radius: var(--bw-radius-l);
 }
 
-html[data-bw] body.bw-article #mw-content-text figcaption {
+html[data-bw][data-bw-kind='article'] #mw-content-text figcaption {
   margin-top: 6px;
   color: var(--bw-mid);
   font-size: 13px;
   line-height: 1.4;
 }
 
-html[data-bw] body.bw-article #mw-content-text .gallery {
+html[data-bw][data-bw-kind='article'] #mw-content-text .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 12px;
 }
 
 /* Les logos et drapeaux gardent un fond clair pour rester lisibles. */
-html[data-bw][data-bw-theme='dark'] body.bw-article #mw-content-text .logo img,
-html[data-bw][data-bw-theme='dark'] body.bw-article #mw-content-text .flag img,
-html[data-bw][data-bw-theme='dark'] body.bw-article #mw-content-text .infobox img {
+html[data-bw][data-bw-theme='dark'] [data-bw-kind='article'] #mw-content-text .logo img,
+html[data-bw][data-bw-theme='dark'] [data-bw-kind='article'] #mw-content-text .flag img,
+html[data-bw][data-bw-theme='dark'] [data-bw-kind='article'] #mw-content-text .infobox img {
   background: #fff;
 }

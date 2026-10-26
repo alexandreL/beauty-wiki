@@ -62,3 +62,34 @@ test('edit and special pages only receive tokens', async () => {
     }
   }
 });
+
+test('tokens-only pages remain readable in dark mode', async () => {
+  const { page, close } = await openFixture(browser, 'edit.html', { stored: { theme: 'dark', width: 860, size: 'm' } });
+  try {
+    await page.waitForFunction(() => document.documentElement.getAttribute('data-bw-theme') === 'dark');
+    const s = await page.evaluate(() => ({
+      containerBg: getComputedStyle(document.querySelector('.mw-page-container-inner')).backgroundColor,
+      bodyColor: getComputedStyle(document.body).color,
+      headerBg: getComputedStyle(document.querySelector('.vector-header')).backgroundColor,
+    }));
+    assert.equal(s.containerBg, 'rgb(10, 10, 10)');
+    assert.equal(s.bodyColor, 'rgb(255, 255, 255)');
+    assert.equal(s.headerBg, 'rgb(10, 10, 10)');
+  } finally {
+    await close();
+  }
+});
+
+test('unknown skins are left untouched', async () => {
+  const { page, close } = await openFixture(browser, 'unknown-skin.html');
+  try {
+    const state = await page.evaluate(() => ({
+      dataBw: document.documentElement.hasAttribute('data-bw'),
+      bodyClass: document.body.className,
+    }));
+    assert.equal(state.dataBw, false);
+    assert.ok(!state.bodyClass.includes('bw-article'));
+  } finally {
+    await close();
+  }
+});

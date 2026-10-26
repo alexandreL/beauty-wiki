@@ -1,9 +1,23 @@
 /* Beauty Wiki — magazine layout */
 
-html[data-bw] body.bw-article .mw-page-container {
+html[data-bw-kind='article'] .mw-page-container {
+  display: block;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  background: var(--bw-bg);
+}
+
+html[data-bw-kind='article'] .mw-page-container-inner {
   display: grid;
   grid-template-columns: var(--bw-toc-width) minmax(0, var(--bw-article-width)) minmax(48px, 1fr);
+  grid-template-areas:
+    'siteNotice siteNotice siteNotice'
+    'columnStart pageContent columnEnd'
+    'footer footer footer';
   column-gap: 48px;
+  row-gap: 0;
   width: auto;
   max-width: none;
   margin: 0;
@@ -11,8 +25,14 @@ html[data-bw] body.bw-article .mw-page-container {
   background: var(--bw-bg);
 }
 
-html[data-bw] body.bw-article .mw-body,
-html[data-bw] body.bw-article .mw-content-container {
+html[data-bw-kind='article'] .vector-column-start { grid-area: columnStart; }
+html[data-bw-kind='article'] .mw-content-container { grid-area: pageContent; }
+html[data-bw-kind='article'] .vector-column-end { grid-area: columnEnd; display: none !important; }
+html[data-bw-kind='article'] .vector-sitenotice-container { grid-area: siteNotice; }
+html[data-bw-kind='article'] .mw-footer-container { grid-area: footer; }
+
+html[data-bw-kind='article'] .mw-body,
+html[data-bw-kind='article'] .mw-content-container {
   margin: 0;
   padding: 0;
   border: 0;
@@ -20,19 +40,19 @@ html[data-bw] body.bw-article .mw-content-container {
   min-width: 0;
 }
 
-html[data-bw] body.bw-article .vector-column-start {
+html[data-bw-kind='article'] .vector-column-start {
   position: sticky;
-  top: 16px;
+  top: calc(64px + 16px);
   align-self: start;
   box-sizing: border-box;
-  height: calc(100vh - 32px);
+  max-height: calc(100vh - 96px);
   overflow-y: auto;
   overscroll-behavior: contain;
   padding-right: 8px;
   scrollbar-width: thin;
 }
 
-html[data-bw] body.bw-article .vector-toc {
+html[data-bw-kind='article'] .vector-toc {
   width: 100%;
   min-width: 0;
   max-width: none;
@@ -41,24 +61,24 @@ html[data-bw] body.bw-article .vector-toc {
   font-size: 14px;
 }
 
-html[data-bw] body.bw-article .vector-column-end {
-  display: none !important;
-}
-
-html[data-bw] body.bw-article #mw-content-text,
-html[data-bw] body.bw-article .mw-parser-output {
+html[data-bw-kind='article'] #mw-content-text,
+html[data-bw-kind='article'] .mw-parser-output {
   width: 100%;
   max-width: var(--bw-article-width);
   margin: 0;
 }
 
-html[data-bw] body.bw-article #mw-content-text img,
-html[data-bw] body.bw-article #mw-content-text table {
+html[data-bw-kind='article'] #mw-content-text img,
+html[data-bw-kind='article'] #mw-content-text table {
   max-width: 100%;
 }
 
-html[data-bw] body.bw-article #mw-content-text {
+html[data-bw-kind='article'] #mw-content-text {
   overflow-wrap: anywhere;
+}
+
+html[data-bw-kind='article'] {
+  scroll-padding-top: calc(64px + 16px);
 }
 
 html[data-bw] .bw-toc-toggle {
@@ -70,7 +90,7 @@ html[data-bw] .bw-toc-veil {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  html[data-bw] body.bw-article .vector-column-start {
+  html[data-bw-kind='article'] .vector-column-start {
     transition: transform 180ms ease;
   }
 }
