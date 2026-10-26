@@ -85,6 +85,25 @@ html[data-bw] .bw-toc-toggle {
   display: none;
 }
 
+html[data-bw] .bw-toc-toggle--hidden {
+  transform: translateY(calc(100% + 32px));
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Au clavier, le bouton redevient visible dès qu'il reçoit le focus. */
+html[data-bw] .bw-toc-toggle--hidden:focus-visible {
+  transform: none;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-bw] .bw-toc-toggle {
+    transition: transform 200ms ease, opacity 200ms ease, background 120ms ease;
+  }
+}
+
 html[data-bw] .bw-toc-veil {
   display: none;
 }

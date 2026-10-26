@@ -66,6 +66,10 @@ var BWLib = (function () {
     return 'article';
   }
 
+  // Wikipédia ne génère que des largeurs de vignettes normalisées : demander
+  // 1200 px renvoie une erreur 400. On arrondit à la taille valide supérieure.
+  var THUMB_WIDTHS = [250, 330, 500, 960, 1280, 1920];
+
   function upscaleThumbUrl(url, targetWidth) {
     if (typeof url !== 'string') return url;
     try {
@@ -73,8 +77,18 @@ var BWLib = (function () {
       if (parsed.pathname.indexOf('/thumb/') === -1) return url;
       var match = /^(.*\/thumb\/.*\/)(\d+)px-([^/]+)$/.exec(parsed.pathname);
       if (!match) return url;
-      if (Number(match[2]) >= targetWidth) return url;
-      parsed.pathname = match[1] + targetWidth + 'px-' + match[3];
+      var width = Number(match[2]);
+      if (width >= targetWidth) return url;
+
+      var target = THUMB_WIDTHS[THUMB_WIDTHS.length - 1];
+      for (var i = 0; i < THUMB_WIDTHS.length; i++) {
+        if (THUMB_WIDTHS[i] >= targetWidth) {
+          target = THUMB_WIDTHS[i];
+          break;
+        }
+      }
+
+      parsed.pathname = match[1] + target + 'px-' + match[3];
       return parsed.href;
     } catch (e) {
       return url;
@@ -119,6 +133,67 @@ var BWLib = (function () {
     return true;
   }
 
+  function thumbWidth(url) {
+    var match = /\/(\d+)px-[^/?#]+(?:[?#]|$)/.exec(url);
+    return match ? Number(match[1]) : 0;
+  }
+
+  // Le `srcset` de Wikipédia contient des tailles réellement générées par le
+  // serveur : c'est la source la plus fiable pour une grande couverture.
+  function coverSource(img, pageUrl) {
+    var raw = [];
+    var src = img.getAttribute('src');
+    if (src) raw.push(src);
+    var srcset = img.getAttribute('srcset') || '';
+    var parts = srcset.split(',');
+    for (var i = 0; i < parts.length; i++) {
+      var candidate = parts[i].trim().split(/\s+/)[0];
+      if (candidate) raw.push(candidate);
+    }
+
+    var seen = {};
+    var largest = '';
+    var largestWidth = -1;
+    var preferred = '';
+    var preferredWidth = Infinity;
+
+    for (var j = 0; j < raw.length; j++) {
+      var absolute;
+      try {
+        absolute = new URL(raw[j], pageUrl || img.baseURI).href;
+      } catch (e) {
+        continue;
+      }
+      if (seen[absolute]) continue;
+      seen[absolute] = true;
+
+      var width = thumbWidth(absolute);
+      if (!width) {
+        if (!largest) {
+          largest = absolute;
+          largestWidth = 0;
+        }
+        continue;
+      }
+      if (width > largestWidth) {
+        largest = absolute;
+        largestWidth = width;
+      }
+      if (width >= 960 && width < preferredWidth) {
+        preferred = absolute;
+        preferredWidth = width;
+      }
+    }
+
+    if (preferred) return preferred;
+    if (!largest) return '';
+
+    // Pas de srcset (pages anciennes) : on remonte à une vignette normalisée.
+    var largestW = thumbWidth(largest);
+    if (largestW && largestW < 960) return upscaleThumbUrl(largest, 1280);
+    return largest;
+  }
+
   function pickCoverImage(doc, pageUrl) {
     var groups = [
       '#mw-content-text .infobox img',
@@ -136,9 +211,10 @@ var BWLib = (function () {
         if (!best || imageWidth(img) > imageWidth(best)) best = img;
       }
       if (best) {
-        var absolute = new URL(best.getAttribute('src'), pageUrl || doc.baseURI).href;
+        var src = coverSource(best, pageUrl || doc.baseURI);
+        if (!src) continue;
         return {
-          src: upscaleThumbUrl(absolute, 1200),
+          src: src,
           alt: best.getAttribute('alt') || ''
         };
       }

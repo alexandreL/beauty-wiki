@@ -33,7 +33,7 @@ test('cover is inserted between the title and the lead paragraph', async () => {
       };
     });
     assert.equal(state.exists, true);
-    assert.ok(state.src.includes('/1200px-'), state.src);
+    assert.ok(state.src.includes('/1280px-'), state.src);
     assert.ok(state.src.endsWith('?utm_source=test'), state.src);
     assert.equal(state.inContent, true);
     assert.equal(state.visible, true);

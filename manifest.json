@@ -1,17 +1,20 @@
 {
   "manifest_version": 3,
   "name": "Beauty Wiki",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Redesign de lecture pour Wikip\u00e9dia, sans compte ni IA.",
   "browser_specific_settings": {
     "gecko": {
       "id": "beauty-wiki@local",
-      "strict_min_version": "115.0",
+      "strict_min_version": "140.0",
       "data_collection_permissions": {
         "required": [
           "none"
         ]
       }
+    },
+    "gecko_android": {
+      "strict_min_version": "142.0"
     }
   },
   "permissions": [
@@ -31,7 +34,8 @@
         "src/css/layout.css",
         "src/css/chrome.css",
         "src/css/content.css",
-        "src/css/responsive.css"
+        "src/css/responsive.css",
+        "src/css/minerva.css"
       ],
       "js": [
         "src/lib.js",

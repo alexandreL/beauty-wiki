@@ -5,7 +5,7 @@ const { chromium } = require('playwright');
 const { startServer } = require('./server');
 
 const ROOT = path.resolve(__dirname, '../..');
-const CSS = ['tokens', 'base', 'layout', 'chrome', 'content', 'responsive'];
+const CSS = ['tokens', 'base', 'layout', 'chrome', 'content', 'responsive', 'minerva'];
 
 const FIXTURE_URLS = {
   'article.html': 'https://fr.wikipedia.org/wiki/Paris',
@@ -14,6 +14,7 @@ const FIXTURE_URLS = {
   'edit.html': 'https://fr.wikipedia.org/w/index.php?title=Paris&action=edit',
   'unknown-skin.html': 'https://fr.wikipedia.org/wiki/Paris',
   'rtl.html': 'https://ar.wikipedia.org/wiki/%D8%A8%D8%A7%D8%B1%D9%8A%D8%B3',
+  'minerva.html': 'https://fr.wikipedia.org/wiki/Paris',
 };
 
 const zlib = require('node:zlib');

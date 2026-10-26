@@ -24,7 +24,10 @@ test('pageKind classifies Wikipedia URLs', () => {
 
 test('upscaleThumbUrl rewrites Wikimedia thumbnails only', () => {
   const u = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Paris.jpg/320px-Paris.jpg';
-  assert.equal(BW.upscaleThumbUrl(u, 1200), 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Paris.jpg/1200px-Paris.jpg');
+  // Wikipédia ne génère que des largeurs normalisées : 1200 px est arrondi à 1280.
+  assert.equal(BW.upscaleThumbUrl(u, 1200), 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Paris.jpg/1280px-Paris.jpg');
+  assert.equal(BW.upscaleThumbUrl(u, 400), 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Paris.jpg/500px-Paris.jpg');
+  assert.equal(BW.upscaleThumbUrl(u, 200), u);
   const original = 'https://upload.wikimedia.org/wikipedia/commons/4/4b/Paris.jpg';
   assert.equal(BW.upscaleThumbUrl(original, 1200), original);
 });

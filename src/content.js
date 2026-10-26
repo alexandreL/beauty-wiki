@@ -36,6 +36,7 @@ var BW = (function () {
       // Activation synchrone : les couleurs et la grille s'appliquent dès document_start.
       BWLib.applySettings(root, DEFAULT_SETTINGS);
       setKind(kind);
+      syncNativeTheme();
       loadSettings();
 
       if (document.body) {
@@ -86,23 +87,50 @@ var BW = (function () {
   function enhance(kind) {
     if (!document.body) return;
 
-    // Le skin est porté par <body> sur Wikipédia : on désactive si ce n'est pas Vector 2022.
-    if (!document.body.classList.contains('skin-vector-2022')) {
+    // Le skin est porté par <body> sur Wikipédia. Vector 2022 (bureau) et
+    // Minerva (mobile, celui que reçoit Firefox sur téléphone) sont supportés.
+    var skin = detectSkin();
+    if (!skin) {
       document.documentElement.removeAttribute('data-bw');
       document.documentElement.removeAttribute('data-bw-kind');
+      document.documentElement.removeAttribute('data-bw-skin');
       return;
     }
+
+    document.documentElement.setAttribute('data-bw-skin', skin);
 
     if (kind === 'article' || kind === 'main') {
       document.body.classList.add('bw-article');
       run(installSkipLink);
       run(installCover);
       run(installTables);
-      run(installTocToggle);
+      if (skin === 'minerva') {
+        run(installSourceLine);
+        run(installFactsCard);
+        run(installMobileToc);
+      } else {
+        run(installTocToggle);
+      }
       run(installThemeToggle);
+      run(shortenSearchPlaceholder);
     } else {
       document.body.classList.add('bw-tokens-only');
+      run(installThemeToggle);
     }
+  }
+
+  function detectSkin() {
+    if (!document.body) return null;
+    if (document.body.classList.contains('skin-minerva')) return 'minerva';
+    if (document.body.classList.contains('skin-vector-2022')) return 'vector';
+    return null;
+  }
+
+  function syncNativeTheme() {
+    var root = document.documentElement;
+    var dark = effectiveTheme() === 'dark';
+    root.classList.toggle('skin-theme-clientpref-night', dark);
+    root.classList.toggle('skin-theme-clientpref-day', !dark);
   }
 
   function run(fn) {
@@ -119,6 +147,7 @@ var BW = (function () {
     BWApi.storage.local.get('beautyWiki')
       .then(function (stored) {
         if (stored && stored.beautyWiki) BWLib.applySettings(document.documentElement, stored.beautyWiki);
+        syncNativeTheme();
         paintThemeToggle(document.querySelector('.bw-theme-toggle'));
       })
       .catch(function () {});
@@ -127,6 +156,7 @@ var BW = (function () {
       BWApi.storage.onChanged.addListener(function (changes, area) {
         if (area !== 'local' || !changes || !changes.beautyWiki) return;
         BWLib.applySettings(document.documentElement, changes.beautyWiki.newValue);
+        syncNativeTheme();
         paintThemeToggle(document.querySelector('.bw-theme-toggle'));
       });
     }
@@ -179,9 +209,18 @@ var BW = (function () {
 
     figure.appendChild(img);
 
-    var lead = parser.querySelector(':scope > section, :scope > p');
-    if (lead) parser.insertBefore(figure, lead);
-    else parser.prepend(figure);
+    // Sur Minerva, la couverture ouvre la page, avant le titre.
+    var preContent = document.documentElement.getAttribute('data-bw-skin') === 'minerva'
+      ? document.querySelector('.pre-content')
+      : null;
+    var heading = preContent && preContent.querySelector('.page-heading');
+
+    if (preContent && heading) preContent.insertBefore(figure, heading);
+    else {
+      var lead = parser.querySelector(':scope > section, :scope > p');
+      if (lead) parser.insertBefore(figure, lead);
+      else parser.prepend(figure);
+    }
 
     var infoboxImg = document.querySelector('.infobox img');
     if (figure.offsetParent !== null && infoboxImg && normalizeThumb(infoboxImg.src) === normalizeThumb(pick.src)) {
@@ -204,6 +243,195 @@ var BW = (function () {
       table.dataset.bwWrapped = '1';
     }
   }
+
+  function installSourceLine() {
+    if (document.querySelector('.bw-source')) return;
+    var heading = document.querySelector('.page-heading');
+    if (!heading) return;
+
+    var text = {
+      fr: 'De Wikipédia, l’encyclopédie libre',
+      en: 'From Wikipedia, the free encyclopedia'
+    }[lang()];
+    if (!text) return;
+
+    var line = document.createElement('p');
+    line.className = 'bw-source';
+    line.textContent = text;
+    heading.appendChild(line);
+  }
+
+  function installFactsCard() {
+    var infobox = document.querySelector('#mw-content-text .infobox');
+    if (!infobox || infobox.closest('.bw-facts')) return;
+
+    var details = document.createElement('details');
+    details.className = 'bw-facts';
+
+    var summary = document.createElement('summary');
+    var label = document.createElement('span');
+    label.className = 'bw-facts__label';
+    label.textContent = lang() === 'fr' ? 'Faits en bref' : 'Quick facts';
+
+    var hint = document.createElement('span');
+    hint.className = 'bw-facts__hint';
+    hint.textContent = factsHint(infobox);
+
+    var chevron = document.createElement('span');
+    chevron.className = 'bw-facts__chevron';
+    chevron.setAttribute('aria-hidden', 'true');
+
+    summary.append(label, hint, chevron);
+
+    var body = document.createElement('div');
+    body.className = 'bw-facts__body';
+
+    infobox.parentNode.insertBefore(details, infobox);
+    body.appendChild(infobox);
+    details.append(summary, body);
+
+    var mq = window.matchMedia('(min-width: 1024px)');
+    var sync = function () {
+      if (mq.matches) details.open = true;
+    };
+    sync();
+    if (mq.addEventListener) mq.addEventListener('change', sync);
+  }
+
+  // Résumé lisible des premières rubriques de l'infobox (« Pays, Région… »).
+  function factsHint(infobox) {
+    var values = [];
+    var cells = infobox.querySelectorAll('tr > th');
+    for (var i = 0; i < cells.length && values.length < 3; i++) {
+      var cell = cells[i];
+      if (cell.colSpan > 1) continue;
+      var text = (cell.textContent || '').trim().replace(/\s+/g, ' ');
+      if (!text || text.length > 26) continue;
+      if (values.indexOf(text) !== -1) continue;
+      values.push(text);
+    }
+    return values.join(', ');
+  }
+
+  function installMobileToc() {
+    if (document.querySelector('.bw-toc-sheet')) return;
+
+    var toc = document.getElementById('toc');
+    if (!toc) return;
+
+    var veil = document.createElement('div');
+    veil.className = 'bw-toc-veil';
+
+    var sheet = document.createElement('aside');
+    sheet.className = 'bw-toc-sheet';
+    sheet.id = 'bw-toc-sheet';
+    sheet.setAttribute('role', 'dialog');
+    sheet.setAttribute('aria-modal', 'true');
+    sheet.setAttribute('aria-labelledby', 'bw-toc-sheet-title');
+
+    var head = document.createElement('div');
+    head.className = 'bw-toc-sheet__head';
+
+    var title = document.createElement('span');
+    title.className = 'bw-toc-sheet__title';
+    title.id = 'bw-toc-sheet-title';
+    title.textContent = tocLabel();
+
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'bw-toc-close';
+    close.textContent = '×';
+    close.setAttribute('aria-label', lang() === 'fr' ? 'Fermer le sommaire' : 'Close contents');
+
+    var body = document.createElement('div');
+    body.className = 'bw-toc-sheet__body';
+    body.appendChild(toc);
+
+    head.append(title, close);
+    sheet.append(head, body);
+
+    var toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'bw-toc-toggle';
+    toggle.setAttribute('aria-controls', 'bw-toc-sheet');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.textContent = tocLabel();
+
+    function isOpen() {
+      return document.documentElement.classList.contains('bw-toc-open');
+    }
+
+    function setOpen(open) {
+      document.documentElement.classList.toggle('bw-toc-open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      sheet.setAttribute('aria-hidden', open ? 'false' : 'true');
+      document.body.style.overflow = open ? 'hidden' : '';
+
+      if (open) {
+        sheet.removeAttribute('inert');
+        close.focus({ preventScroll: true });
+      } else {
+        sheet.setAttribute('inert', '');
+        toggle.classList.remove('bw-toc-toggle--hidden');
+        toggle.focus({ preventScroll: true });
+      }
+    }
+
+    toggle.addEventListener('click', function () {
+      setOpen(!isOpen());
+    });
+
+    veil.addEventListener('click', function () {
+      setOpen(false);
+    });
+
+    close.addEventListener('click', function () {
+      setOpen(false);
+    });
+
+    body.addEventListener('click', function (event) {
+      var link = event.target.closest ? event.target.closest('a[href^="#"]') : null;
+      if (link) setOpen(false);
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && isOpen()) setOpen(false);
+    });
+
+    sheet.setAttribute('aria-hidden', 'true');
+    sheet.setAttribute('inert', '');
+    document.body.append(veil, sheet, toggle);
+
+    watchTocScroll(toggle, isOpen);
+  }
+
+  // Le bouton flottant s'efface à la descente et revient à la remontée,
+  // pour ne jamais masquer le texte pendant la lecture.
+  function watchTocScroll(toggle, isOpen) {
+    var lastY = window.scrollY || 0;
+    var ticking = false;
+    var minerva = document.documentElement.getAttribute('data-bw-skin') === 'minerva';
+
+    // Sur Minerva le bouton n'apparaît qu'après un premier défilement ; sur
+    // Vector il reste visible en haut de page, puis s'efface à la descente.
+    if (minerva) toggle.classList.add('bw-toc-toggle--hidden');
+
+    function update() {
+      ticking = false;
+      var y = window.scrollY || 0;
+      var scrolledDown = y > lastY && y > 320;
+      var tooHigh = minerva && y < 320;
+      toggle.classList.toggle('bw-toc-toggle--hidden', !isOpen() && (tooHigh || scrolledDown));
+      lastY = y;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(update);
+    }, { passive: true });
+  }
+
 
   function currentTheme() {
     return document.documentElement.getAttribute('data-bw-theme') || 'auto';
@@ -247,7 +475,9 @@ var BW = (function () {
   }
 
   function installThemeToggle() {
-    var host = document.querySelector('.vector-header-end') || document.querySelector('.vector-header');
+    var minerva = document.body.classList.contains('skin-minerva');
+    var host = minerva ? document.querySelector('.minerva-header')
+      : (document.querySelector('.vector-header-end') || document.querySelector('.vector-header'));
     if (!host || document.querySelector('.bw-theme-toggle')) return;
 
     var toggle = document.createElement('button');
@@ -260,6 +490,7 @@ var BW = (function () {
       var next = order[(order.indexOf(currentTheme()) + 1) % order.length];
       var settings = currentSettings(next);
       BWLib.applySettings(document.documentElement, settings);
+      syncNativeTheme();
       paintThemeToggle(toggle);
       if (BWApi && BWApi.storage && BWApi.storage.local) {
         BWApi.storage.local.set({ beautyWiki: settings }).catch(function () {});
@@ -267,10 +498,38 @@ var BW = (function () {
     });
 
     var media = window.matchMedia('(prefers-color-scheme: dark)');
-    var repaint = function () { paintThemeToggle(toggle); };
+    var repaint = function () {
+      syncNativeTheme();
+      paintThemeToggle(toggle);
+    };
     if (media.addEventListener) media.addEventListener('change', repaint);
 
-    host.appendChild(toggle);
+    if (minerva) {
+      var userNav = host.querySelector('.minerva-user-navigation');
+      if (userNav) host.insertBefore(toggle, userNav);
+      else host.appendChild(toggle);
+    } else {
+      host.appendChild(toggle);
+    }
+  }
+
+  function shortenSearchPlaceholder() {
+    if (document.documentElement.getAttribute('data-bw-skin') !== 'vector') return;
+    var input = document.querySelector('#searchform input[name="search"], #searchform #searchInput');
+    if (!input || input.dataset.bwPlaceholder === '1') return;
+
+    var full = input.getAttribute('placeholder') || '';
+    if (!full) return;
+
+    input.dataset.bwPlaceholder = '1';
+    input.dataset.bwPlaceholderFull = full;
+
+    var mq = window.matchMedia('(max-width: 767px)');
+    var apply = function () {
+      input.setAttribute('placeholder', mq.matches ? 'Rechercher' : full);
+    };
+    apply();
+    if (mq.addEventListener) mq.addEventListener('change', apply);
   }
 
   function tocLabel() {
@@ -323,6 +582,7 @@ var BW = (function () {
           if (first) first.focus({ preventScroll: true });
         } else {
           syncClosedState();
+          toggle.classList.remove('bw-toc-toggle--hidden');
           toggle.focus({ preventScroll: true });
         }
       }
@@ -347,6 +607,7 @@ var BW = (function () {
 
     document.body.append(veil, toggle);
     syncClosedState();
+    watchTocScroll(toggle, isOpen);
   }
 
   return { init: init, _paintThemeToggle: paintThemeToggle };

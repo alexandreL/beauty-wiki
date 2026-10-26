@@ -1,0 +1,190 @@
+<!doctype html>
+<html class="skin-minerva" lang="fr" dir="ltr">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Paris — Wikipédia</title>
+<style>
+  /* Base Minerva minimale : uniquement ce que le vrai skin fournit déjà.
+     Le reste de la mise en page vient de l'extension. */
+  body { margin: 0; }
+  #mw-mf-page-left { position: fixed; top: 0; bottom: 0; left: -100%; width: 75%; background: #eaecf0; z-index: 100; overflow-y: auto; }
+  .toggle-list__checkbox { display: none; }
+  #main-menu-input:checked ~ #mw-mf-page-left { left: 0; }
+  .main-menu-mask { display: none; }
+  #mw-mf-main-menu-button { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; cursor: pointer; }
+  #mw-mf-main-menu-button::before { content: '☰'; font-size: 22px; }
+  .branding-box img { display: block; }
+  #searchIcon::before { content: '⌕'; font-size: 24px; }
+  .search-box { display: none; }
+  .minerva-icon { display: inline-block; width: 16px; height: 16px; }
+  .minerva-icon--language::before { content: '🌐'; }
+  .last-modified-bar { display: block; }
+</style>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Paris rootpage-Paris skin-minerva action-view mw-mf mf-collapsible-sections">
+
+<header class="header-container header-chrome">
+  <div class="minerva-header">
+    <nav class="navigation-drawer toggle-list" aria-label="Menu principal">
+      <input type="checkbox" id="main-menu-input" class="toggle-list__checkbox">
+      <label id="mw-mf-main-menu-button" class="cdx-button cdx-button--size-large" for="main-menu-input" aria-label="Ouvrir le menu principal"></label>
+      <div id="mw-mf-page-left" class="menu">
+        <ul id="p-navigation" class="toggle-list__list">
+          <li class="toggle-list-item"><a class="toggle-list-item__anchor" href="/wiki/Accueil"><span class="toggle-list-item__label">Accueil</span></a></li>
+          <li class="toggle-list-item"><a class="toggle-list-item__anchor" href="/wiki/Sp%C3%A9cial:Page_au_hasard"><span class="toggle-list-item__label">Au hasard</span></a></li>
+        </ul>
+        <ul id="p-personal" class="toggle-list__list">
+          <li class="toggle-list-item"><a class="toggle-list-item__anchor" href="/w/index.php?title=Sp%C3%A9cial:Cr%C3%A9er_un_compte">Créer un compte</a></li>
+          <li class="toggle-list-item"><a class="toggle-list-item__anchor" href="/w/index.php?title=Sp%C3%A9cial:Connexion">Se connecter</a></li>
+        </ul>
+      </div>
+      <label class="main-menu-mask" for="main-menu-input"></label>
+    </nav>
+
+    <div class="branding-box">
+      <a href="/wiki/Accueil"><span><img src="data:image/svg+xml,%3Csvg xmlns%3D%22http%3A//www.w3.org/2000/svg%22 width%3D%22119%22 height%3D%2218%22 viewBox%3D%220 0 119 18%22%3E%3Ctext x%3D%220%22 y%3D%2214%22 font-family%3D%22Georgia%2Cserif%22 font-size%3D%2215%22 letter-spacing%3D%221%22%3EWIKIP%C3%89DIA%3C/text%3E%3C/svg%3E" alt="Wikipédia" width="119" height="18"></span></a>
+    </div>
+
+    <form role="search" action="/w/index.php" method="get" class="minerva-search-form">
+      <div class="search-box search-box--typeahead">
+        <input class="search skin-minerva-search-trigger" id="searchInput" type="search" name="search" placeholder="Rechercher sur Wikipédia" aria-label="Rechercher sur Wikipédia">
+      </div>
+      <button id="searchIcon" class="cdx-button cdx-button--size-large cdx-button--icon-only" type="button" aria-label="Rechercher"></button>
+    </form>
+
+    <div class="minerva-badge-container">
+      <button id="minerva-badge" class="cdx-button cdx-button--icon-only" type="button" aria-label="Nouveautés"></button>
+    </div>
+
+    <nav class="minerva-user-navigation" aria-label="Menu utilisateur">
+      <div class="toggle-list minerva-user-menu">
+        <input type="checkbox" id="user-menu-input" class="toggle-list__checkbox">
+        <label class="toggle-list__label" for="user-menu-input" aria-label="Menu utilisateur"></label>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div id="mw-mf-viewport">
+  <div id="mw-mf-page-center">
+    <main id="content" class="mw-body">
+      <div class="pre-content heading-holder">
+        <div class="page-heading">
+          <h1 id="firstHeading" class="firstHeading mw-first-heading">Paris</h1>
+          <div class="tagline">capitale et ville la plus peuplée de France</div>
+        </div>
+
+        <nav class="page-actions-menu">
+          <ul id="p-views" class="page-actions-menu__list minerva-icon-only-menu">
+            <li id="language-selector" class="page-actions-menu__list-item">
+              <a role="button" href="#p-lang" class="cdx-button cdx-button--size-large cdx-button--icon-only" title="Langue">
+                <span class="minerva-icon minerva-icon--language"></span><span>Langue</span>
+              </a>
+            </li>
+            <li id="page-actions-bookmark" class="page-actions-menu__list-item">
+              <a role="button" id="ca-bookmark" href="#" title="Ajouter cette page à vos éléments enregistrés">
+                <span class="minerva-icon minerva-icon--bookmarkOutline"></span><span>Enregistrer</span>
+              </a>
+            </li>
+            <li id="page-actions-viewsource" class="page-actions-menu__list-item">
+              <a role="button" id="ca-edit" href="/w/index.php?title=Paris&amp;action=edit" title="Voir le texte source">
+                <span class="minerva-icon minerva-icon--edit"></span><span>Voir le texte source</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div id="bodyContent" class="content">
+        <div id="mw-content-text" class="mw-body-content">
+          <div class="mw-content-ltr mw-parser-output">
+            <section>
+              <div class="bandeau-container metadata homonymie">
+                <div class="bandeau-cell bandeau-icone"></div>
+                <div class="bandeau-cell">Pour les articles homonymes, voir <a href="/wiki/Paris_(homonymie)">Paris (homonymie)</a>.</div>
+              </div>
+
+              <p><b>Paris</b> est la capitale de la France et le chef-lieu de la région
+                Île-de-France. Elle est située au centre du bassin parisien, sur une boucle
+                de la Seine. <span class="mw-editsection">[<a href="#">modifier</a>]</span></p>
+
+              <table class="infobox_v2 infobox infobox--frwiki">
+                <tbody>
+                  <tr><th colspan="2">Paris</th></tr>
+                  <tr><td colspan="2"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/Paris.jpg/280px-Paris.jpg" width="280" height="200" alt="Vue de Paris"></td></tr>
+                  <tr><th>Pays</th><td>France</td></tr>
+                  <tr><th>Région</th><td>Île-de-France</td></tr>
+                  <tr><th>Département</th><td>Paris</td></tr>
+                  <tr><th>Maire</th><td>Emmanuel Grégoire</td></tr>
+                  <tr><th>Code postal</th><td>75001 à 75020</td></tr>
+                  <tr><th>Population</th><td>2 047 602 hab.</td></tr>
+                </tbody>
+              </table>
+
+              <p>La ville est occupée depuis le III<sup>e</sup> siècle avant notre ère.</p>
+
+              <div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading">
+                <input type="checkbox" id="toctogglecheckbox" class="toctogglecheckbox">
+                <div class="toctitle"><h2 id="mw-toc-heading">Sommaire</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"></label></span></div>
+                <ul>
+                  <li class="toclevel-1"><a href="#Histoire"><span class="tocnumber">1</span> <span class="toctext">Histoire</span></a></li>
+                  <li class="toclevel-1"><a href="#Géographie"><span class="tocnumber">2</span> <span class="toctext">Géographie</span></a>
+                    <ul>
+                      <li class="toclevel-2"><a href="#Climat"><span class="tocnumber">2.1</span> <span class="toctext">Climat</span></a></li>
+                    </ul>
+                  </li>
+                  <li class="toclevel-1"><a href="#Culture"><span class="tocnumber">3</span> <span class="toctext">Culture</span></a></li>
+                </ul>
+              </div>
+
+              <div class="mw-heading mw-heading2 mf-collapsible-heading">
+                <h2 id="Histoire">Histoire</h2>
+                <button type="button" class="mf-collapsible-toggle" aria-controls="Histoire-collapsible-content" aria-expanded="false"><span class="mf-icon mf-collapsible-icon mf-icon-expand"></span></button>
+              </div>
+              <div class="mw-collapsible-content mf-collapsible-content" id="Histoire-collapsible-content" hidden="until-found">
+                <p>Au Moyen Âge, Paris s'impose comme un foyer intellectuel majeur.</p>
+
+                <figure class="mw-default-size">
+                  <a href="/wiki/Fichier:Paris_Night.jpg" class="mw-file-description"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e6/Paris_Night.jpg/960px-Paris_Night.jpg" width="960" height="300" alt="Vue sur Paris"></a>
+                  <figcaption>La Seine et la tour Eiffel.</figcaption>
+                </figure>
+              </div>
+
+              <h2 id="Géographie">Géographie</h2>
+              <div class="thumb" style="width: 471px;">
+                <div class="thumbinner"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Pont_des_Arts.jpg/960px-Pont_des_Arts.jpg" width="471" height="300" alt="Le pont des Arts"><div class="thumbcaption">Le pont des Arts.</div></div>
+              </div>
+              <table class="wikitable">
+                <caption>Climat</caption>
+                <tbody>
+                  <tr><th>Mois</th><th>Température</th></tr>
+                  <tr><td>Janvier</td><td>5 °C</td></tr>
+                  <tr><td>Juillet</td><td>25 °C</td></tr>
+                </tbody>
+              </table>
+
+              <h3 id="Climat">Climat</h3>
+              <p>Paris bénéficie d'un climat océanique tempéré.</p>
+
+              <blockquote><p>« Paris est une fête. »</p></blockquote>
+
+              <h2 id="Culture">Culture</h2>
+              <p>Paris accueille de nombreux musées, dont le Louvre.</p>
+            </section>
+          </div>
+        </div>
+        <div class="post-content"></div>
+      </div>
+    </main>
+
+    <footer class="mw-footer minerva-footer">
+      <a href="/w/index.php?title=Paris&amp;action=info" class="last-modified-bar">
+        <span>La dernière modification de cette page a été faite le 26 octobre 2026.</span>
+      </a>
+      <div class="footer-content">
+        <p>Le contenu est disponible sous licence CC BY-SA 4.0.</p>
+      </div>
+    </footer>
+  </div>
+</div>
+
+</body>
+</html>

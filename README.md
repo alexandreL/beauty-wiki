@@ -1,12 +1,20 @@
 # Beauty Wiki
 
 Extension Firefox qui redessine les pages Wikipédia pour la lecture, sans compte,
-sans IA et sans redirection.
+sans IA et sans redirection. Sur ordinateur comme sur téléphone.
 
 ## Objectif
 
 Appliquer localement une mise en page de lecture moderne (couverture, titres serif,
 colonne de lecture, thème sombre) directement sur `*.wikipedia.org`, à la volée.
+
+Deux peaux sont prises en charge :
+
+- **Vector 2022** (bureau) : grille magazine, sommaire latéral collant, colonne de
+  lecture réglable.
+- **Minerva** (mobile, celui que Firefox sur Android reçoit réellement) : couverture
+  avant le titre, carte « Faits en bref » repliable à la place de l'infobox,
+  sommaire en feuille coulissante, texte aéré et images pleine largeur.
 
 ## Installation
 
@@ -18,7 +26,18 @@ colonne de lecture, thème sombre) directement sur `*.wikipedia.org`, à la vol�
 
 L'extension reste active jusqu'au redémarrage de Firefox.
 
+### Firefox pour Android
+
+L'extension cible le skin mobile de Wikipédia, donc Firefox sur Android est la cible
+principale. Une fois le paquet publié sur addons.mozilla.org (ou chargé via une
+collection), l'installation se fait normalement depuis le gestionnaire de modules.
+Le rendu mobile est vérifié sur le DOM Minerva réel (Playwright, profil iPhone) et
+sur un fixture Minerva pour les tests.
+
 ### Chrome / Edge
+
+Chrome Android n'accepte pas les extensions ; la version Chrome vise le bureau et
+les fenêtres étroites.
 
 1. Ouvrir `chrome://extensions` et activer le mode développeur.
 2. « Charger l'extension non empaquetée ».
@@ -41,20 +60,33 @@ le choix est mémorisé. Le popup de la barre d'outils propose :
 - **Largeur** : 680, 860 (défaut), 970, 1200 px.
 - **Taille du texte** : S, M (défaut), L.
 
-Les préférences sont stockées dans `storage.local`, rien n'est envoyé sur le réseau.
+Sur mobile, le bouton de thème prend place dans la barre Minerva, à côté de la
+recherche. Les préférences sont stockées dans `storage.local`, rien n'est envoyé sur
+le réseau.
+
+## Vue mobile
+
+- La couverture ouvre la page, avant le titre, avec un cadrage 4/3 sur téléphone.
+- L'infobox devient une carte **Faits en bref** repliée, qui affiche les premières
+  rubriques (Pays, Région, …) et se déplie au toucher.
+- Les sections ne sont pas des accordéons : l'article se lit d'un seul tenant.
+- Un bouton **Sommaire** apparaît après le premier défilement et ouvre une feuille
+  avec la hiérarchie complète ; il s'efface à la descente pour ne pas masquer le texte.
+- Les tableaux larges défilent horizontalement, les images et légendes ne débordent
+  jamais, et les fonds colorés des TemplateStyles sont neutralisés.
 
 ## Limites connues
 
-- Le layout magazine ne s'applique qu'aux articles (espace de noms principal) et à
-  la page d'accueil. `Special:`, historique, diff, édition et discussions ne
-  reçoivent que les couleurs et la typographie.
-- Le skin Vector 2022 est la cible. Les autres skins ne sont pas supportés.
+- Le layout magazine s'applique aux articles (espace de noms principal) et à la page
+  d'accueil. `Special:`, historique, diff, édition et discussions ne reçoivent que les
+  couleurs et la typographie.
+- Vector 2022 et Minerva sont les cibles ; les autres skins ne sont pas supportés.
 - En thème sombre, les couleurs codées en dur par les TemplateStyles de Wikipédia
   peuvent rester claires. Les surfaces principales (infobox, tableaux, notes,
-  galeries) sont couvertes.
-- Firefox uniquement pour l'instant. Le paquet est validé par `web-ext lint` et par une
-suite Playwright exécutée dans Chrome ; le rendu n'a pas encore été vérifié dans un
-vrai Firefox sur cette machine (Firefox n'y est pas installé).
+  galeries) sont couvertes, et le mode nuit natif de Minerva est activé en même temps
+  que le thème sombre.
+- Le rendu Firefox n'est pas exécuté dans la CI ; la suite Playwright tourne dans
+  Chromium avec le DOM Minerva réel et des fixtures.
 
 ## Polices
 

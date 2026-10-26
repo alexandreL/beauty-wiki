@@ -1,0 +1,871 @@
+/* Beauty Wiki — Minerva (Wikipédia mobile), la vue utilisée par Firefox mobile */
+
+/* --------------------------------------------------------------------------
+   Structure générale
+   -------------------------------------------------------------------------- */
+
+html[data-bw-skin='minerva'] {
+  background: var(--bw-bg);
+}
+
+html[data-bw-skin='minerva'] body {
+  background: var(--bw-bg) !important;
+  color: var(--bw-fg);
+  overflow-x: hidden;
+}
+
+html[data-bw-skin='minerva'] #mw-mf-viewport,
+html[data-bw-skin='minerva'] #mw-mf-page-center {
+  background: var(--bw-bg) !important;
+  min-height: 100vh;
+}
+
+html[data-bw-skin='minerva'] .mw-body {
+  background: transparent !important;
+  margin: 0;
+  padding: 0 0 48px;
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   En-tête : barre fine, translucide, sans compte
+   -------------------------------------------------------------------------- */
+
+html[data-bw-skin='minerva'] .header-container {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: 56px;
+  padding: 0 8px;
+  background: var(--bw-backdrop) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--bw-border);
+  box-shadow: none;
+}
+
+html[data-bw-skin='minerva'] .minerva-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  max-width: none;
+  height: 56px;
+  margin: 0;
+  padding: 0;
+}
+
+html[data-bw-skin='minerva'] .branding-box {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0 4px;
+}
+
+html[data-bw-skin='minerva'] .branding-box a {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+html[data-bw-skin='minerva'] .branding-box img {
+  width: auto;
+  max-width: 100%;
+  height: 17px;
+}
+
+/* Le bouton hamburger garde son comportement natif, en plus discret. */
+html[data-bw-skin='minerva'] .navigation-drawer {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+html[data-bw-skin='minerva'] .navigation-drawer .cdx-button,
+html[data-bw-skin='minerva'] #mw-mf-main-menu-button {
+  color: var(--bw-fg);
+}
+
+/* Recherche : icône seule, l'overlay natif reste inchangé. */
+html[data-bw-skin='minerva'] .minerva-search-form {
+  flex: 0 0 auto;
+  width: auto !important;
+  margin: 0;
+  margin-inline-start: auto;
+}
+
+html[data-bw-skin='minerva'] .minerva-search-form .search-box,
+html[data-bw-skin='minerva'] .minerva-search-form .cdx-search-input {
+  display: none;
+}
+
+html[data-bw-skin='minerva'] #searchIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--bw-fg);
+  box-shadow: none;
+}
+
+html[data-bw-skin='minerva'] #searchIcon:hover {
+  background: var(--bw-ash);
+}
+
+/* Compte, badges et notifications : hors périmètre d'un lecteur. */
+html[data-bw-skin='minerva'] .minerva-user-navigation,
+html[data-bw-skin='minerva'] .minerva-badge-container,
+html[data-bw-skin='minerva'] .minerva-anon-talk-message,
+html[data-bw-skin='minerva'] .minerva__tab-container {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Tête d'article : titre, sur-titre, actions
+   -------------------------------------------------------------------------- */
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .pre-content {
+  max-width: var(--bw-article-width);
+  margin: 0 auto;
+  padding: 16px 16px 4px;
+  border: 0 !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .page-actions-menu,
+html[data-bw-skin='minerva'][data-bw-kind='article'] .page-actions-menu__list {
+  border: 0 !important;
+  background: transparent !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #language-selector {
+  flex: 0 0 auto !important;
+  width: max-content !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #language-selector a {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: auto !important;
+  min-width: max-content !important;
+  max-width: none !important;
+  overflow: visible !important;
+  white-space: nowrap;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #language-selector a > span:not(.minerva-icon) {
+  display: inline-block !important;
+  position: static !important;
+  flex: 0 0 auto;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  clip: auto !important;
+  white-space: nowrap;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .pre-content figure.bw-cover {
+  margin: 0 0 22px;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .page-heading {
+  margin: 0;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #firstHeading {
+  margin: 0 0 6px;
+  font-size: clamp(32px, 9.5vw, 42px);
+  line-height: 1.12;
+  letter-spacing: -0.022em;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .tagline {
+  margin: 0;
+  color: var(--bw-mid);
+  font-family: var(--bw-sans);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+html[data-bw-skin='minerva'] .bw-source {
+  margin: 10px 0 0;
+  color: var(--bw-mid);
+  font-family: var(--bw-sans);
+  font-size: 12.5px;
+  letter-spacing: 0.01em;
+}
+
+/* Barre d'actions : ne reste que le sélecteur de langue. */
+html[data-bw-skin='minerva'][data-bw-kind='article'] #p-views.page-actions-menu__list {
+  display: flex !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .page-actions-menu {
+  display: block;
+  margin: 14px 0 0;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .page-actions-menu__list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .page-actions-menu__list-item {
+  width: auto;
+  margin: 0;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #page-actions-bookmark,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #page-actions-viewsource,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #page-actions-watch,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #ca-edit {
+  display: none !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #language-selector a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--bw-border);
+  border-radius: 999px;
+  background: var(--bw-ash);
+  color: var(--bw-mid);
+  font-family: var(--bw-sans);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #language-selector .minerva-icon {
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+}
+
+/* --------------------------------------------------------------------------
+   Contenu
+   -------------------------------------------------------------------------- */
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #bodyContent.content {
+  max-width: var(--bw-article-width);
+  margin: 0 auto;
+  padding: 8px 16px 0;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text,
+html[data-bw-skin='minerva'][data-bw-kind='article'] .mw-parser-output {
+  width: 100%;
+  max-width: none;
+  color: var(--bw-fg);
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text p {
+  margin: 0 0 1.1em;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, var(--bw-link) 38%, transparent);
+  text-underline-offset: 2px;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text a:hover,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text a:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+/* Les sections restent ouvertes : on lit un article, on ne déplie pas un
+   accordéon. Seules les sections de premier niveau sont concernées ; les
+   encarts repliables imbriqués (navboxes, galeries) restent fermés. */
+html[data-bw-skin='minerva'][data-bw-kind='article'] .mw-parser-output > section > .mf-collapsible-content[hidden],
+html[data-bw-skin='minerva'][data-bw-kind='article'] .mw-parser-output > section > .mw-collapsible-content[hidden] {
+  display: block !important;
+  content-visibility: visible !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .mf-collapsible-toggle {
+  display: none !important;
+}
+
+/* Bandeaux de site (collectes, campagnes) : hors périmètre lecture. */
+html[data-bw-skin='minerva'] #siteNotice,
+html[data-bw-skin='minerva'] .sitenotice,
+html[data-bw-skin='minerva'] .mw-dismissable-notice,
+html[data-bw-skin='minerva'] .centralnotice,
+html[data-bw-skin='minerva'] .frbanner {
+  display: none !important;
+}
+
+/* Titres de section, espacés et sans chevauchement. */
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text h2 {
+  margin: 1.7em 0 0.7em;
+  padding-bottom: 0.28em;
+  font-size: clamp(25px, 7vw, 30px);
+  line-height: 1.2;
+  border-bottom: 1px solid var(--bw-border);
+}
+
+/* Minerva ajoute son propre filet et du padding autour des titres :
+   on garde un seul trait, celui du h2. */
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .mw-heading {
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text h3 {
+  margin: 1.3em 0 0.5em;
+  font-size: 21px;
+  line-height: 1.25;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text h4 {
+  margin: 1.4em 0 0.4em;
+  font-size: 18px;
+}
+
+/* Couverture : pleine largeur du texte, généreuse sur téléphone. */
+html[data-bw-skin='minerva'][data-bw-kind='article'] figure.bw-cover {
+  aspect-ratio: 4 / 3;
+  max-height: 58vh;
+  margin: 18px 0 26px;
+  border-radius: 20px;
+}
+
+@media (min-width: 768px) {
+  html[data-bw-skin='minerva'][data-bw-kind='article'] figure.bw-cover {
+    aspect-ratio: 16 / 9;
+    border-radius: var(--bw-radius-2xl);
+  }
+}
+
+/* Certains encarts (chronologies, frises) portent une largeur fixe en em
+   dans leur style inline. On la plafonne et on laisse défiler. */
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .mw-parser-output div[style*='width'] {
+  max-width: 100% !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .mw-parser-output div[style*='width'][style*='overflow'] {
+  overflow-x: auto !important;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Images : jamais de débordement horizontal. */
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .thumb,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text figure,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .gallerybox {
+  display: block !important;
+  width: auto !important;
+  max-width: 100% !important;
+  margin: 1.5em 0 !important;
+  float: none !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text figure,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text figure img,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .thumb,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .thumbinner,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .thumb img {
+  border: 0 !important;
+  border-radius: 12px;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text figcaption,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .thumbcaption {
+  text-align: left !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .thumb img,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text figure img,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .gallerybox img {
+  width: 100% !important;
+  max-width: 100%;
+  height: auto !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .thumbinner {
+  width: 100% !important;
+  max-width: 100%;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .thumbcaption,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text figcaption {
+  width: auto !important;
+  margin-top: 8px;
+  padding: 0 !important;
+  color: var(--bw-mid);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* Bandeaux et notes : des cartes, pas des blocs techniques. */
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .hatnote,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .bandeau-container,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .ambox {
+  margin: 1.2em 0 !important;
+  border-radius: var(--bw-radius-l);
+  font-size: 14px;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .bandeau-container {
+  padding: 12px 14px;
+  background: var(--bw-ash);
+  border: 1px solid var(--bw-border);
+}
+
+/* Tableaux : défilement horizontal maîtrisé. */
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-table-scroll {
+  margin: 1.4em 0;
+  padding-bottom: 4px;
+}
+
+/* Un tableau large doit défiler, pas comprimer ses cellules jusqu'à
+   empiler un caractère par ligne (et faire 10 000 px de haut). */
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text .bw-table-scroll > table {
+  width: max-content !important;
+  min-width: 100%;
+  max-width: none !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text table.wikitable {
+  min-width: 480px;
+  font-size: 13.5px;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text table.wikitable th,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text table.wikitable td {
+  padding: 9px 12px;
+}
+
+/* Les TemplateStyles de Wikipédia posent des fonds verts/bleus en style
+   inline sur les cellules. On les neutralise pour garder une lecture calme. */
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text table th[style*='background'],
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text table td[style*='background'],
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text table tr[style*='background'],
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text table caption[style*='background'],
+html[data-bw-skin='minerva'][data-bw-kind='article'] .infobox [class*='entete'] {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text table,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text table th,
+html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text table td {
+  border-color: var(--bw-border) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Infobox : carte « Faits en bref » repliable
+   -------------------------------------------------------------------------- */
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts {
+  display: block;
+  margin: 1.8em 0;
+  border: 1px solid var(--bw-border);
+  border-radius: var(--bw-radius-xl);
+  background: var(--bw-ash);
+  overflow: hidden;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts > summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  list-style: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts > summary::-webkit-details-marker {
+  display: none;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts__label {
+  flex: 0 0 auto;
+  font-family: var(--bw-sans);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts__hint {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--bw-mid);
+  font-family: var(--bw-sans);
+  font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts__chevron {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--bw-bg);
+  border: 1px solid var(--bw-border);
+  position: relative;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts__chevron::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 7px;
+  height: 7px;
+  border-right: 1.6px solid var(--bw-fg);
+  border-bottom: 1.6px solid var(--bw-fg);
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 160ms ease;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts[open] .bw-facts__chevron::before {
+  transform: translateY(2px) rotate(225deg);
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts__body {
+  padding: 0 16px 16px;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts .infobox {
+  float: none !important;
+  width: 100% !important;
+  max-width: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  font-size: 14px;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts .infobox tr {
+  border-bottom: 1px solid color-mix(in srgb, var(--bw-border) 70%, transparent);
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts .infobox tr:last-child {
+  border-bottom: 0;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts .infobox th,
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts .infobox td {
+  padding: 8px 4px !important;
+  vertical-align: top;
+  text-align: left;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts .infobox img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--bw-radius-m);
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts .infobox img,
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts .infobox div,
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts .infobox table,
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts .infobox tbody {
+  border: 0 !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts .infobox td[style*='text-align'],
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts .infobox div[style*='text-align'],
+html[data-bw-skin='minerva'][data-bw-kind='article'] .bw-facts .infobox [align='center'] {
+  text-align: left !important;
+}
+
+/* --------------------------------------------------------------------------
+   Sommaire : feuille coulissante
+   -------------------------------------------------------------------------- */
+
+html[data-bw-skin='minerva'] .bw-toc-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: fixed;
+  left: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 70;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--bw-border);
+  border-radius: 999px;
+  background: var(--bw-bg);
+  color: var(--bw-fg);
+  box-shadow: var(--bw-elevation-2);
+  font: 600 14px/1 var(--bw-sans);
+  cursor: pointer;
+}
+
+html[data-bw-skin='minerva'] .bw-toc-toggle::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  -webkit-mask: linear-gradient(currentColor, currentColor);
+  mask: linear-gradient(currentColor, currentColor);
+  -webkit-mask-image: var(--bw-icon-list);
+  mask-image: var(--bw-icon-list);
+}
+
+html[data-bw-skin='minerva'] .bw-toc-veil {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 75;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+}
+
+html[data-bw-skin='minerva'].bw-toc-open .bw-toc-veil {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-bw-skin='minerva'] .bw-toc-veil {
+    transition: opacity 200ms ease;
+  }
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  max-height: 82vh;
+  max-height: 82dvh;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--bw-bg);
+  border-top: 1px solid var(--bw-border);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.22);
+  transform: translateY(102%);
+  visibility: hidden;
+}
+
+html[data-bw-skin='minerva'].bw-toc-open .bw-toc-sheet {
+  transform: translateY(0);
+  visibility: visible;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-bw-skin='minerva'] .bw-toc-sheet {
+    transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1), visibility 0s linear 220ms;
+  }
+
+  html[data-bw-skin='minerva'].bw-toc-open .bw-toc-sheet {
+    transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1), visibility 0s;
+  }
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px 10px;
+  border-bottom: 1px solid var(--bw-border);
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet__title {
+  font-family: var(--bw-serif);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+html[data-bw-skin='minerva'] .bw-toc-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--bw-border);
+  border-radius: 999px;
+  background: var(--bw-ash);
+  color: var(--bw-fg);
+  font: 400 20px/1 var(--bw-sans);
+  cursor: pointer;
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet__body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px 8px 24px;
+  -webkit-overflow-scrolling: touch;
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc {
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  font-size: 15px;
+  visibility: visible !important;
+  overflow: visible !important;
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc * {
+  visibility: visible !important;
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc ul {
+  display: block !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc .toctitle,
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc .toctogglespan,
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc .toc-title-icon,
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc .toc-title-state-icon,
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc #toctogglecheckbox {
+  display: none !important;
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc ul ul {
+  padding-left: 14px;
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc li {
+  margin: 0;
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--bw-fg);
+  font-family: var(--bw-sans);
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc a:hover,
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc a:focus-visible {
+  background: var(--bw-ash);
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc .tocnumber {
+  display: inline !important;
+  margin-right: 8px;
+  color: var(--bw-light);
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-bw-skin='minerva'] .bw-toc-sheet #toc ul ul {
+  margin-left: 0 !important;
+  padding-left: 12px !important;
+}
+
+/* --------------------------------------------------------------------------
+   Pied de page et bandeau de dernière modification
+   -------------------------------------------------------------------------- */
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .minerva-footer {
+  margin-top: 8px;
+  border-top: 1px solid var(--bw-border);
+  background: transparent;
+  color: var(--bw-mid);
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .last-modified-bar {
+  padding: 14px 16px;
+  background: var(--bw-ash) !important;
+  color: var(--bw-mid) !important;
+  font-family: var(--bw-sans);
+  font-size: 13px;
+  border-bottom: 1px solid var(--bw-border);
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .last-modified-bar * {
+  color: inherit !important;
+}
+
+html[data-bw-skin='minerva'][data-bw-kind='article'] .footer-content {
+  padding: 16px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   Thème sombre : surfaces natives et cartes
+   -------------------------------------------------------------------------- */
+
+html[data-bw-skin='minerva'][data-bw-theme='dark'] #mw-mf-page-left,
+html[data-bw-skin='minerva'][data-bw-theme='dark'] .overlay,
+html[data-bw-skin='minerva'][data-bw-theme='dark'] .mw-overlays-container > div,
+html[data-bw-skin='minerva'][data-bw-theme='dark'] .search-overlay,
+html[data-bw-skin='minerva'][data-bw-theme='dark'] .language-overlay,
+html[data-bw-skin='minerva'][data-bw-theme='dark'] .minerva-footer,
+html[data-bw-skin='minerva'][data-bw-theme='dark'] .last-modified-bar {
+  background: var(--bw-bg) !important;
+  color: var(--bw-fg);
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-bw-skin='minerva'][data-bw-theme='auto'] #mw-mf-page-left,
+  html[data-bw-skin='minerva'][data-bw-theme='auto'] .overlay,
+  html[data-bw-skin='minerva'][data-bw-theme='auto'] .mw-overlays-container > div,
+  html[data-bw-skin='minerva'][data-bw-theme='auto'] .search-overlay,
+  html[data-bw-skin='minerva'][data-bw-theme='auto'] .language-overlay,
+  html[data-bw-skin='minerva'][data-bw-theme='auto'] .minerva-footer,
+  html[data-bw-skin='minerva'][data-bw-theme='auto'] .last-modified-bar {
+    background: var(--bw-bg) !important;
+    color: var(--bw-fg);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Grands écrans (Minerva servi sur tablette / fenêtre large)
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 1024px) {
+  html[data-bw-skin='minerva'][data-bw-kind='article'] .pre-content {
+    padding-top: 40px;
+  }
+
+  html[data-bw-skin='minerva'][data-bw-kind='article'] #mw-content-text {
+    font-size: 18px;
+  }
+}
