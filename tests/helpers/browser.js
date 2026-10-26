@@ -46,6 +46,15 @@ async function openFixture(browser, fixture, opts = {}) {
     return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html });
   });
 
+  await page.route('**/fonts/*.woff2', (route) => {
+    const name = path.basename(new URL(route.request().url()).pathname);
+    return route.fulfill({
+      status: 200,
+      contentType: 'font/woff2',
+      body: require('node:fs').readFileSync(path.join(ROOT, 'fonts', name)),
+    });
+  });
+
   await page.addInitScript((stored) => {
     window.browser = {
       storage: {
