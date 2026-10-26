@@ -48,7 +48,7 @@ test('no cover and no empty box when the article has no image', async () => {
   try {
     const state = await page.evaluate(() => ({
       covers: document.querySelectorAll('figure.bw-cover').length,
-      pick: BW.pickCover(document),
+      pick: BWLib.pickCoverImage(document, location.href),
     }));
     assert.equal(state.covers, 0);
     assert.equal(state.pick, null);

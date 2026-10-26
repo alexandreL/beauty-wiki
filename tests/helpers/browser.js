@@ -36,6 +36,8 @@ async function openFixture(browser, fixture, opts = {}) {
   const html = require('node:fs').readFileSync(path.join(ROOT, 'tests/fixtures', fixture), 'utf8');
   const target = opts.url || FIXTURE_URLS[fixture] || 'https://fr.wikipedia.org/wiki/Paris';
 
+  await page.route('https://upload.wikimedia.org/**', (route) => route.fulfill({ status: 200, contentType: 'image/png', body: PIXEL }));
+
   await page.route('https://*.wikipedia.org/**', async (route) => {
     const requestUrl = new URL(route.request().url());
     if (requestUrl.pathname.startsWith('/img/')) {

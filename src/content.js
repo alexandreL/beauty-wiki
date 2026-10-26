@@ -30,6 +30,7 @@ var BW = (function () {
     if (kind === 'article' || kind === 'main') {
       document.body.classList.add('bw-article');
       installSkipLink();
+      installCover();
       installTocToggle();
     } else {
       document.body.classList.add('bw-tokens-only');
@@ -38,6 +39,7 @@ var BW = (function () {
 
   function installSkipLink() {
     if (document.querySelector('.bw-skip')) return;
+
     var link = document.createElement('a');
     link.className = 'bw-skip';
     link.href = '#mw-content-text';
@@ -45,6 +47,43 @@ var BW = (function () {
       ? 'Aller au contenu'
       : 'Skip to content';
     document.body.prepend(link);
+  }
+
+  function normalizeThumb(url) {
+    return String(url || '').replace(/\/\d+px-(?=[^/]+$)/, '/');
+  }
+
+  function installCover() {
+    if (document.querySelector('figure.bw-cover')) return;
+
+    var parser = document.querySelector('.mw-parser-output') || document.querySelector('#mw-content-text');
+    if (!parser) return;
+
+    var pick = BWLib.pickCoverImage(document, location.href);
+    if (!pick) return;
+
+    var figure = document.createElement('figure');
+    figure.className = 'bw-cover';
+
+    var img = document.createElement('img');
+    img.className = 'bw-cover-img';
+    img.src = pick.src;
+    img.alt = pick.alt;
+    img.width = 1200;
+    img.height = 500;
+    img.loading = 'eager';
+    img.decoding = 'async';
+
+    figure.appendChild(img);
+
+    var lead = parser.querySelector('p');
+    if (lead) parser.insertBefore(figure, lead);
+    else parser.prepend(figure);
+
+    var infoboxImg = document.querySelector('.infobox img');
+    if (infoboxImg && normalizeThumb(infoboxImg.src) === normalizeThumb(pick.src)) {
+      infoboxImg.classList.add('bw-duplicate');
+    }
   }
 
   function tocLabel() {
