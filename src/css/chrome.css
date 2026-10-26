@@ -252,6 +252,11 @@ html[data-bw] .bw-theme-toggle::before {
   mask: var(--bw-icon-sun) center / contain no-repeat;
 }
 
+html[data-bw] .bw-theme-toggle.bw-theme-toggle--auto::before {
+  -webkit-mask-image: var(--bw-icon-auto);
+  mask-image: var(--bw-icon-auto);
+}
+
 html[data-bw] .bw-theme-toggle.bw-theme-toggle--dark::before {
   -webkit-mask-image: var(--bw-icon-moon);
   mask-image: var(--bw-icon-moon);

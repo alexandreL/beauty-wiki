@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Beauty Wiki",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Redesign de lecture pour Wikip\u00e9dia, sans compte ni IA.",
   "browser_specific_settings": {
     "gecko": {

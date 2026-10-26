@@ -120,20 +120,26 @@ test('header toggle switches theme and persists it', async () => {
     await page.waitForTimeout(100);
     const toggle = page.locator('.bw-theme-toggle');
     assert.equal(await toggle.count(), 1);
+    assert.equal(await toggle.getAttribute('data-bw-state'), 'auto');
     assert.equal(await toggle.getAttribute('aria-pressed'), 'false');
 
     await page.evaluate(() => {
       window.__set = null;
       window.browser.storage.local.set = async (value) => { window.__set = value; };
     });
+
+    await toggle.click();
+    assert.equal(await page.evaluate(() => document.documentElement.getAttribute('data-bw-theme')), 'light');
+    assert.equal(await toggle.getAttribute('data-bw-state'), 'light');
+
     await toggle.click();
     assert.equal(await page.evaluate(() => document.documentElement.getAttribute('data-bw-theme')), 'dark');
     assert.equal(await toggle.getAttribute('aria-pressed'), 'true');
     assert.deepEqual(await page.evaluate(() => window.__set), { beautyWiki: { theme: 'dark', width: 860, size: 'm' } });
 
     await toggle.click();
-    assert.equal(await page.evaluate(() => document.documentElement.getAttribute('data-bw-theme')), 'light');
-    assert.equal(await toggle.getAttribute('aria-pressed'), 'false');
+    assert.equal(await page.evaluate(() => document.documentElement.getAttribute('data-bw-theme')), 'auto');
+    assert.equal(await toggle.getAttribute('data-bw-state'), 'auto');
   } finally {
     await close();
   }

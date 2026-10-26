@@ -225,14 +225,25 @@ var BW = (function () {
 
   function paintThemeToggle(toggle) {
     if (!toggle) return;
-    var dark = effectiveTheme() === 'dark';
+    var theme = currentTheme();
     var french = lang() === 'fr';
-    toggle.classList.toggle('bw-theme-toggle--dark', dark);
-    toggle.setAttribute('aria-pressed', dark ? 'true' : 'false');
-    toggle.setAttribute('aria-label', dark
-      ? (french ? 'Passer au thème clair' : 'Switch to light theme')
-      : (french ? 'Passer au thème sombre' : 'Switch to dark theme'));
-    toggle.setAttribute('title', toggle.getAttribute('aria-label'));
+    var dark = effectiveTheme() === 'dark';
+
+    toggle.classList.toggle('bw-theme-toggle--auto', theme === 'auto');
+    toggle.classList.toggle('bw-theme-toggle--dark', theme === 'dark');
+    toggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+    toggle.setAttribute('data-bw-state', theme);
+
+    var labels = {
+      auto: french ? 'Thème automatique, suit le système' : 'Automatic theme, follows the system',
+      light: french ? 'Thème clair' : 'Light theme',
+      dark: french ? 'Thème sombre' : 'Dark theme'
+    };
+    toggle.setAttribute('aria-label', labels[theme] || labels.auto);
+    toggle.setAttribute('title', labels[theme] || labels.auto);
+    toggle.setAttribute('aria-live', 'polite');
+    if (theme === 'auto') toggle.setAttribute('data-bw-effective', dark ? 'dark' : 'light');
+    else toggle.removeAttribute('data-bw-effective');
   }
 
   function installThemeToggle() {
@@ -245,7 +256,8 @@ var BW = (function () {
     paintThemeToggle(toggle);
 
     toggle.addEventListener('click', function () {
-      var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+      var order = ['auto', 'light', 'dark'];
+      var next = order[(order.indexOf(currentTheme()) + 1) % order.length];
       var settings = currentSettings(next);
       BWLib.applySettings(document.documentElement, settings);
       paintThemeToggle(toggle);
