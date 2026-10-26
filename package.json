@@ -2,11 +2,12 @@
   "name": "beauty-wiki",
   "version": "0.1.0",
   "private": true,
-  "description": "Redesign de lecture pour Wikipédia, sans compte ni IA.",
+  "description": "Redesign de lecture pour Wikip\u00e9dia, sans compte ni IA.",
   "scripts": {
     "test": "node --test --test-force-exit tests/unit/*.test.js tests/e2e/*.test.js",
     "test:unit": "node --test tests/unit/*.test.js",
-    "lint": "web-ext lint --source-dir . --ignore-files \"tests/**\" \"docs/**\" \"node_modules/**\" \".superpowers/**\""
+    "lint": "web-ext lint --source-dir . --ignore-files \"tests/**\" \"docs/**\" \"node_modules/**\" \".superpowers/**\"",
+    "build": "web-ext build --source-dir . --artifacts-dir web-ext-artifacts --overwrite-dest --ignore-files \"tests/**\" \"docs/**\" \"node_modules/**\" \".superpowers/**\" \"package*.json\""
   },
   "devDependencies": {
     "playwright": "^1.61.1",

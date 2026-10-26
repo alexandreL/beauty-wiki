@@ -35,7 +35,9 @@ Les préférences sont stockées dans `storage.local`, rien n'est envoyé sur le
 - En thème sombre, les couleurs codées en dur par les TemplateStyles de Wikipédia
   peuvent rester claires. Les surfaces principales (infobox, tableaux, notes,
   galeries) sont couvertes.
-- Firefox uniquement pour l'instant ; Chromium n'est pas testé.
+- Firefox uniquement pour l'instant. Le paquet est validé par `web-ext lint` et par une
+suite Playwright exécutée dans Chrome ; le rendu n'a pas encore été vérifié dans un
+vrai Firefox sur cette machine (Firefox n'y est pas installé).
 
 ## Polices
 
@@ -46,8 +48,9 @@ IBM Plex Serif est embarquée sous licence SIL Open Font License 1.1
 
 ```bash
 npm install
-npm test        # unitaires + intégration (Chrome via Playwright)
+npm test        # 28 tests : unitaires + intégration Chrome via Playwright
 npm run lint    # web-ext lint
+npm run build   # zip dans web-ext-artifacts/
 ```
 
 ## Licence
