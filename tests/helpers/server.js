@@ -50,7 +50,11 @@ function startServer(root) {
       const { port } = server.address();
       resolve({
         url: `http://127.0.0.1:${port}`,
-        close: () => new Promise((done) => server.close(done)),
+        close: () =>
+          new Promise((done) => {
+            if (typeof server.closeAllConnections === 'function') server.closeAllConnections();
+            server.close(done);
+          }),
       });
     });
   });

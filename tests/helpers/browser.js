@@ -7,6 +7,19 @@ const { startServer } = require('./server');
 const ROOT = path.resolve(__dirname, '../..');
 const CSS = ['tokens', 'base', 'layout', 'chrome', 'content', 'responsive'];
 
+const FIXTURE_URLS = {
+  'article.html': 'https://fr.wikipedia.org/wiki/Paris',
+  'article-noimage.html': 'https://fr.wikipedia.org/wiki/Lyon',
+  'special.html': 'https://fr.wikipedia.org/wiki/Sp%C3%A9cial:Recherche',
+  'edit.html': 'https://fr.wikipedia.org/w/index.php?title=Paris&action=edit',
+  'rtl.html': 'https://ar.wikipedia.org/wiki/%D8%A8%D8%A7%D8%B1%D9%8A%D8%B3',
+};
+
+const PIXEL = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+  'base64'
+);
+
 async function launch() {
   return chromium.launch({ channel: 'chrome', headless: true });
 }
@@ -20,6 +33,17 @@ async function openFixture(browser, fixture, opts = {}) {
   });
   const page = await context.newPage();
 
+  const html = require('node:fs').readFileSync(path.join(ROOT, 'tests/fixtures', fixture), 'utf8');
+  const target = opts.url || FIXTURE_URLS[fixture] || 'https://fr.wikipedia.org/wiki/Paris';
+
+  await page.route('https://*.wikipedia.org/**', async (route) => {
+    const requestUrl = new URL(route.request().url());
+    if (requestUrl.pathname.startsWith('/img/')) {
+      return route.fulfill({ status: 200, contentType: 'image/png', body: PIXEL });
+    }
+    return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html });
+  });
+
   await page.addInitScript(() => {
     window.browser = {
       storage: {
@@ -32,7 +56,7 @@ async function openFixture(browser, fixture, opts = {}) {
     };
   });
 
-  await page.goto(`${server.url}/tests/fixtures/${fixture}`, { waitUntil: 'domcontentloaded' });
+  await page.goto(target, { waitUntil: 'domcontentloaded' });
 
   for (const name of CSS) {
     await page.addStyleTag({ path: path.join(ROOT, 'src/css', `${name}.css`) });

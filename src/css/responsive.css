@@ -1,1 +1,108 @@
 /* Beauty Wiki — responsive and RTL */
+
+@media (max-width: 1023px) {
+  html[data-bw] body.bw-article .mw-page-container {
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+    padding: 16px 16px 96px;
+  }
+
+  html[data-bw] body.bw-article .vector-column-start {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 60;
+    width: min(300px, 82vw);
+    height: 100vh;
+    padding: 24px;
+    background: var(--bw-bg);
+    border-right: 1px solid var(--bw-border);
+    box-shadow: var(--bw-elevation-2);
+    transform: translateX(-100%);
+  }
+
+  html[data-bw] body.bw-article.bw-toc-open .vector-column-start,
+  html[data-bw].bw-toc-open body.bw-article .vector-column-start {
+    transform: translateX(0);
+  }
+
+  html[data-bw] .bw-toc-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 61;
+    height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--bw-border);
+    border-radius: 999px;
+    background: var(--bw-ash);
+    color: var(--bw-fg);
+    box-shadow: var(--bw-elevation-1);
+    font: 600 14px/1 var(--bw-sans);
+    cursor: pointer;
+  }
+
+  html[data-bw] .bw-toc-toggle:hover {
+    background: var(--bw-bg);
+  }
+
+  html[data-bw] .bw-toc-toggle[hidden] {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  html[data-bw] #firstHeading {
+    font-size: 34px;
+  }
+
+  html[data-bw] body.bw-article .mw-page-container {
+    padding-inline: 16px;
+  }
+
+  html[data-bw] body.bw-article .bw-cover {
+    margin-inline: -16px;
+    border-radius: 0;
+  }
+
+  html[data-bw] body.bw-article .infobox {
+    float: none;
+    width: 100%;
+  }
+}
+
+/* RTL: mirror the grid and use logical spacing. */
+html[data-bw][dir='rtl'] body.bw-article .mw-page-container {
+  grid-template-columns: minmax(48px, 1fr) minmax(0, var(--bw-article-width)) var(--bw-toc-width);
+}
+
+html[data-bw][dir='rtl'] body.bw-article .vector-column-start {
+  padding-right: 0;
+  padding-left: 8px;
+}
+
+@media (max-width: 1023px) {
+  html[data-bw][dir='rtl'] body.bw-article .mw-page-container {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  html[data-bw][dir='rtl'] body.bw-article .vector-column-start {
+    left: auto;
+    right: 0;
+    border-right: 0;
+    border-left: 1px solid var(--bw-border);
+    transform: translateX(100%);
+  }
+
+  html[data-bw].bw-toc-open body.bw-article .vector-column-start {
+    transform: translateX(0);
+  }
+
+  html[data-bw][dir='rtl'] .bw-toc-toggle {
+    left: auto;
+    right: 16px;
+  }
+}

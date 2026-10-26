@@ -4,7 +4,7 @@
   "private": true,
   "description": "Redesign de lecture pour Wikipédia, sans compte ni IA.",
   "scripts": {
-    "test": "node --test tests/unit/*.test.js tests/e2e/*.test.js",
+    "test": "node --test --test-force-exit tests/unit/*.test.js tests/e2e/*.test.js",
     "test:unit": "node --test tests/unit/*.test.js",
     "lint": "web-ext lint --source-dir . --ignore-files \"tests/**\" \"docs/**\" \"node_modules/**\" \".superpowers/**\""
   },
