@@ -31,6 +31,7 @@ var BW = (function () {
       document.body.classList.add('bw-article');
       installSkipLink();
       installCover();
+      installTables();
       installTocToggle();
     } else {
       document.body.classList.add('bw-tokens-only');
@@ -47,6 +48,22 @@ var BW = (function () {
       ? 'Aller au contenu'
       : 'Skip to content';
     document.body.prepend(link);
+  }
+
+  function installTables() {
+    var tables = document.querySelectorAll('#mw-content-text table');
+    for (var i = 0; i < tables.length; i++) {
+      var table = tables[i];
+      if (table.dataset.bwWrapped === '1') continue;
+      if (table.classList.contains('infobox') || table.classList.contains('navbox')) continue;
+      if (table.closest('.infobox, .navbox')) continue;
+
+      var wrapper = document.createElement('div');
+      wrapper.className = 'bw-table-scroll';
+      table.parentNode.insertBefore(wrapper, table);
+      wrapper.appendChild(table);
+      table.dataset.bwWrapped = '1';
+    }
   }
 
   function normalizeThumb(url) {
