@@ -1,1 +1,117 @@
-/* Beauty Wiki — Wikipedia chrome */
+/* Beauty Wiki — Wikipedia chrome, reading only */
+
+/* Édition : tout ce qui permet de modifier la page disparaît (lecture pure). */
+html[data-bw] #p-views,
+html[data-bw] #p-cactions,
+html[data-bw] #p-associated-pages,
+html[data-bw] .mw-editsection,
+html[data-bw] .mw-indicators,
+html[data-bw] .vector-page-toolbar,
+html[data-bw] .mw-jump-link {
+  display: none !important;
+}
+
+/* Compte et notifications : hors périmètre d'un lecteur. */
+html[data-bw] #p-personal,
+html[data-bw] #pt-userpage,
+html[data-bw] #pt-notifications,
+html[data-bw] #pt-watchlist {
+  display: none !important;
+}
+
+/* Bandeaux de collecte et messages système. */
+html[data-bw] .centralnotice,
+html[data-bw] .frbanner,
+html[data-bw] .mw-message-box {
+  display: none !important;
+}
+
+/* En-tête minimal, collant, translucide. */
+html[data-bw] body.bw-article .vector-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 64px;
+  padding: 0 24px;
+  margin: 0;
+  background: var(--bw-backdrop);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--bw-border);
+  box-shadow: none;
+}
+
+html[data-bw] body.bw-article .vector-header .mw-logo {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  text-decoration: none;
+}
+
+html[data-bw] body.bw-article .vector-header .mw-logo-wordmark {
+  font-family: var(--bw-serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--bw-fg);
+}
+
+/* Recherche en pilule. */
+html[data-bw] body.bw-article #searchform {
+  flex: 1 1 auto;
+  display: flex;
+  gap: 8px;
+  max-width: 420px;
+  margin: 0;
+}
+
+html[data-bw] body.bw-article #searchform input {
+  width: 100%;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid var(--bw-border);
+  border-radius: 999px;
+  background: var(--bw-ash);
+  color: var(--bw-fg);
+  font: 400 14px/1 var(--bw-sans);
+}
+
+html[data-bw] body.bw-article #searchform input::placeholder {
+  color: var(--bw-mid);
+}
+
+html[data-bw] body.bw-article #searchform button {
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--bw-border);
+  border-radius: 999px;
+  background: var(--bw-bg);
+  color: var(--bw-fg);
+  font: 600 13px/1 var(--bw-sans);
+  cursor: pointer;
+}
+
+html[data-bw] body.bw-article #p-lang-btn {
+  margin-inline-start: auto;
+  font-size: 14px;
+}
+
+/* Lien d'évitement, visible seulement au clavier. */
+html[data-bw] .bw-skip {
+  position: absolute;
+  left: 16px;
+  top: -48px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: var(--bw-radius-m);
+  background: var(--bw-bg);
+  border: 1px solid var(--bw-border);
+  color: var(--bw-fg);
+  font: 600 14px/1 var(--bw-sans);
+  transition: top 120ms ease;
+}
+
+html[data-bw] .bw-skip:focus {
+  top: 16px;
+}

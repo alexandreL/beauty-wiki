@@ -29,10 +29,22 @@ var BW = (function () {
 
     if (kind === 'article' || kind === 'main') {
       document.body.classList.add('bw-article');
+      installSkipLink();
       installTocToggle();
     } else {
       document.body.classList.add('bw-tokens-only');
     }
+  }
+
+  function installSkipLink() {
+    if (document.querySelector('.bw-skip')) return;
+    var link = document.createElement('a');
+    link.className = 'bw-skip';
+    link.href = '#mw-content-text';
+    link.textContent = (document.documentElement.lang || 'en').split('-')[0] === 'fr'
+      ? 'Aller au contenu'
+      : 'Skip to content';
+    document.body.prepend(link);
   }
 
   function tocLabel() {
