@@ -46,7 +46,10 @@ function makePng(width, height) {
 const PIXEL = makePng(400, 250);
 
 async function launch() {
-  return chromium.launch({ channel: 'chrome', headless: true });
+  const channel = process.env.BW_CHANNEL || 'chrome';
+  const options = { headless: true };
+  if (channel !== 'chromium') options.channel = channel;
+  return chromium.launch(options);
 }
 
 async function openFixture(browser, fixture, opts = {}) {

@@ -144,3 +144,29 @@ test('header toggle switches theme and persists it', async () => {
     await close();
   }
 });
+
+test('uses chrome.storage when the browser namespace is absent', async () => {
+  const page = await browser.newPage();
+  try {
+    await page.addInitScript(() => {
+      window.chrome = {
+        storage: {
+          local: {
+            get: async () => ({ ok: 1 }),
+            set: async () => {},
+          },
+          onChanged: { addListener: () => {} },
+        },
+      };
+    });
+    await page.goto('about:blank');
+    await page.addScriptTag({ path: require('node:path').join(__dirname, '../../src/lib.js') });
+    const ok = await page.evaluate(async () => {
+      const value = await BWApi.storage.local.get('probe');
+      return value.ok === 1;
+    });
+    assert.equal(ok, true);
+  } finally {
+    await page.close();
+  }
+});

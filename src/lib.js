@@ -1,3 +1,7 @@
+/* API WebExtension : Firefox expose `browser`, Chrome expose `chrome`. */
+var BWApi = (typeof browser !== 'undefined' && browser && browser.storage) ? browser
+  : (typeof chrome !== 'undefined' && chrome && chrome.storage ? chrome : null);
+
 var BWLib = (function () {
   'use strict';
 

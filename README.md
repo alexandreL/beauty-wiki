@@ -5,16 +5,32 @@ sans IA et sans redirection.
 
 ## Objectif
 
-Appliquer localement la direction visuelle de Wikiwand (couverture, titres serif,
+Appliquer localement une mise en page de lecture moderne (couverture, titres serif,
 colonne de lecture, thème sombre) directement sur `*.wikipedia.org`, à la volée.
 
-## Installation temporaire
+## Installation
+
+### Firefox (temporaire)
 
 1. Ouvrir Firefox → `about:debugging#/runtime/this-firefox`
 2. « Charger un module complémentaire temporaire… »
-3. Choisir `manifest.json` à la racine du projet.
+3. Choisir `dist/firefox/manifest.json` (ou `manifest.json` à la racine).
 
 L'extension reste active jusqu'au redémarrage de Firefox.
+
+### Chrome / Edge
+
+1. Ouvrir `chrome://extensions` et activer le mode développeur.
+2. « Charger l'extension non empaquetée ».
+3. Choisir le dossier `dist/chrome/`.
+
+### Paquets
+
+```bash
+npm run build           # Firefox + Chrome dans artifacts/
+npm run build:firefox
+npm run build:chrome
+```
 
 ## Réglages
 
@@ -49,10 +65,12 @@ IBM Plex Serif est embarquée sous licence SIL Open Font License 1.1
 
 ```bash
 npm install
-npm test        # 28 tests : unitaires + intégration Chrome via Playwright
-npm run lint    # web-ext lint
-npm run build   # zip dans web-ext-artifacts/
+npm test        # unitaires + intégration navigateur (Playwright)
+npm run lint    # web-ext lint (manifest Firefox)
+npm run build   # zips Firefox + Chrome dans artifacts/
 ```
+
+En CI, les tests tournent avec Chromium (`BW_CHANNEL=chromium`).
 
 ## Licence
 

@@ -114,17 +114,17 @@ var BW = (function () {
   }
 
   function loadSettings() {
-    if (typeof browser === 'undefined' || !browser.storage || !browser.storage.local) return;
+    if (!BWApi || !BWApi.storage || !BWApi.storage.local) return;
 
-    browser.storage.local.get('beautyWiki')
+    BWApi.storage.local.get('beautyWiki')
       .then(function (stored) {
         if (stored && stored.beautyWiki) BWLib.applySettings(document.documentElement, stored.beautyWiki);
         paintThemeToggle(document.querySelector('.bw-theme-toggle'));
       })
       .catch(function () {});
 
-    if (browser.storage.onChanged && browser.storage.onChanged.addListener) {
-      browser.storage.onChanged.addListener(function (changes, area) {
+    if (BWApi.storage.onChanged && BWApi.storage.onChanged.addListener) {
+      BWApi.storage.onChanged.addListener(function (changes, area) {
         if (area !== 'local' || !changes || !changes.beautyWiki) return;
         BWLib.applySettings(document.documentElement, changes.beautyWiki.newValue);
         paintThemeToggle(document.querySelector('.bw-theme-toggle'));
@@ -261,8 +261,8 @@ var BW = (function () {
       var settings = currentSettings(next);
       BWLib.applySettings(document.documentElement, settings);
       paintThemeToggle(toggle);
-      if (typeof browser !== 'undefined' && browser.storage && browser.storage.local) {
-        browser.storage.local.set({ beautyWiki: settings }).catch(function () {});
+      if (BWApi && BWApi.storage && BWApi.storage.local) {
+        BWApi.storage.local.set({ beautyWiki: settings }).catch(function () {});
       }
     });
 

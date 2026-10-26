@@ -39,12 +39,12 @@
   async function init() {
     if (started) return;
     started = true;
-    if (typeof browser === 'undefined' || !browser.storage || !browser.storage.local) return;
+    if (!BWApi || !BWApi.storage || !BWApi.storage.local) return;
 
     var status = document.getElementById('status');
 
     try {
-      var stored = await browser.storage.local.get('beautyWiki');
+      var stored = await BWApi.storage.local.get('beautyWiki');
       fill(formFromSettings(stored && stored.beautyWiki));
     } catch (e) {
       console.warn('[Beauty Wiki]', e);
@@ -53,7 +53,7 @@
     document.getElementById('save').addEventListener('click', async function () {
       var settings = settingsFromForm(read());
       try {
-        await browser.storage.local.set({ beautyWiki: settings });
+        await BWApi.storage.local.set({ beautyWiki: settings });
         status.textContent = 'Enregistré';
         setTimeout(function () { window.close(); }, 600);
       } catch (e) {
