@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Beauty Wiki</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <h1>Beauty Wiki</h1>
+
+  <fieldset>
+    <legend>Thème</legend>
+    <label><input type="radio" name="theme" value="auto" checked> Auto</label>
+    <label><input type="radio" name="theme" value="light"> Clair</label>
+    <label><input type="radio" name="theme" value="dark"> Sombre</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Largeur</legend>
+    <label><input type="radio" name="width" value="680"> Étroite</label>
+    <label><input type="radio" name="width" value="860" checked> Standard</label>
+    <label><input type="radio" name="width" value="970"> Large</label>
+    <label><input type="radio" name="width" value="1200"> Très large</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Taille du texte</legend>
+    <label><input type="radio" name="size" value="s"> Petite</label>
+    <label><input type="radio" name="size" value="m" checked> Normale</label>
+    <label><input type="radio" name="size" value="l"> Grande</label>
+  </fieldset>
+
+  <button id="save" type="button">Enregistrer</button>
+  <p id="status" role="status" aria-live="polite"></p>
+
+  <script src="../lib.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

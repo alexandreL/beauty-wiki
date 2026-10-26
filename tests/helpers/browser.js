@@ -46,17 +46,17 @@ async function openFixture(browser, fixture, opts = {}) {
     return route.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html });
   });
 
-  await page.addInitScript(() => {
+  await page.addInitScript((stored) => {
     window.browser = {
       storage: {
         local: {
-          get: async () => ({}),
+          get: async () => (stored ? { beautyWiki: stored } : {}),
           set: async () => {},
         },
         onChanged: { addListener: () => {} },
       },
     };
-  });
+  }, opts.stored || null);
 
   await page.goto(target, { waitUntil: 'domcontentloaded' });
 

@@ -13,6 +13,7 @@ var BW = (function () {
       if (kind === 'other') return;
 
       BWLib.applySettings(root, { theme: 'light', width: 860, size: 'm' });
+      loadSettings();
       enableFor(kind);
     } catch (e) {
       console.warn('[Beauty Wiki]', e);
@@ -35,6 +36,23 @@ var BW = (function () {
       installTocToggle();
     } else {
       document.body.classList.add('bw-tokens-only');
+    }
+  }
+
+  function loadSettings() {
+    if (typeof browser === 'undefined' || !browser.storage || !browser.storage.local) return;
+
+    browser.storage.local.get('beautyWiki')
+      .then(function (stored) {
+        if (stored && stored.beautyWiki) BWLib.applySettings(document.documentElement, stored.beautyWiki);
+      })
+      .catch(function () {});
+
+    if (browser.storage.onChanged && browser.storage.onChanged.addListener) {
+      browser.storage.onChanged.addListener(function (changes, area) {
+        if (area !== 'local' || !changes || !changes.beautyWiki) return;
+        BWLib.applySettings(document.documentElement, changes.beautyWiki.newValue);
+      });
     }
   }
 
